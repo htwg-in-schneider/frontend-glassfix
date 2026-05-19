@@ -59,3 +59,11 @@ Made static product page from mock work as a Vue project:
 - `Anfragen` are displayed in a grid.
 - "Details" button shows `Anfrage` description in an alert.
 - Anfrage images, category, date, questions, desr´cription and ID are now populated from array data.
+
+### Iteration 4: High-Level components
+
+- Vue components have been created inside `src/components`.
+- `AnfrageCard.vue` is used inside `App.vue` for showing a `Anfrage` summary.
+- `App.vue` is now using `Header.vue`, `Logo.vue`, and `AnfrageCard.vue` components for better structure.
+- Styles specific to components have been moved from `styles.css` into their respective `<style scoped>` sections.
+- Logic specific to components has been moved into their respective `<script setup>` sections.

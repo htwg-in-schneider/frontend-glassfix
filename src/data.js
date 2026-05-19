@@ -6,7 +6,7 @@ export const anfragen = [
         beschreibung: "Beschreibung der Anfrage 1",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...", 
         erstellungsdatum: "28.4.2026",
-        bildUrl: "https://example.com/bild1.jpg"
+        bildUrl: "/ProjektBilder/Leistung1.png"
     },
     {
         id: 2,
@@ -15,7 +15,7 @@ export const anfragen = [
         beschreibung: "Beschreibung der Anfrage 2",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
         erstellungsdatum: "27.4.2026",
-        bildUrl: "https://example.com/bild2.jpg"
+        bildUrl: "/ProjektBilder/Leistung2.png"
     },
     {
         id: 3,
@@ -24,7 +24,7 @@ export const anfragen = [
         beschreibung: "Beschreibung der Anfrage 3",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
         erstellungsdatum: "26.4.2026",
-        bildUrl: "https://example.com/bild3.jpg"
+        bildUrl: "/ProjektBilder/Leistung3.png"
     },
     {
         id: 4,
@@ -33,6 +33,6 @@ export const anfragen = [
         beschreibung: "Beschreibung der Anfrage 4",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
         erstellungsdatum: "25.4.2026",
-        bildUrl: "https://example.com/bild4.jpg"
+        bildUrl: "/ProjektBilder/BeforeAfterLinks.png"
     }
 ]
