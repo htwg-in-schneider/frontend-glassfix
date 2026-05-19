@@ -36,3 +36,26 @@ npm run dev
 ```sh
 npm run build
 ```
+
+ Iteration 1: Static content
+
+Made static product page from mock work as a Vue project:
+
+- Source: index.html from static project
+- Logo and CSS go into assets folder
+- favicon goes to public folder
+- index.html: link favicon, CSS and bootstrap JS
+- App.vue: Main content goes here. Logo image link adapted.
+
+### Iteration 2: GitHub Page deployment
+
+- Added `.github/workflows/build-and-deploy.js.yml` to deploy as GitHub Page.
+- Tweaked `vite.config.js` to use correct base URL - otherwise the JS files won't be loaded when hosted as a GitHub page.
+- Added custom favicon
+
+### Iteration 3: Dynamic product loading from local data
+
+- Replaced static `Anfrage` cards with dynamic rendering using Vue's `v-for` from local `anfragen` array in data.js.
+- `Anfragen` are displayed in a grid.
+- "Details" button shows `Anfrage` description in an alert.
+- Anfrage images, category, date, questions, desr´cription and ID are now populated from array data.

@@ -15,7 +15,81 @@ body {
     padding: 20px;
 }
 
+.custom-filter-btn {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.2s;
+}
+.custom-filter-btn:active {
+  transform: scale(0.95);
+}
 
+.custom-anfrage-card {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.08) !important;
+  background-color: #ffffff;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+@media (min-width: 768px) {
+  .custom-anfrage-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0px 12px 20px rgba(0, 0, 0, 0.12) !important;
+  }
+}
+
+.style-img-container {
+  width: 110px;
+  height: auto;
+}
+@media (min-width: 768px) {
+  .style-img-container {
+    width: 100% !important;
+    height: 200px;
+  }
+}
+.style-title {
+  font-size: 1.1rem;
+}
+@media (min-width: 768px) {
+  .style-title {
+    font-size: 1.25rem;
+  }
+}
+
+.style-badge {
+  border-radius: 10px; 
+  font-size: 0.75rem; 
+  border-color: #ccc !important;
+}
+@media (min-width: 768px) {
+  .style-badge {
+    font-size: 0.85rem;
+  }
+}
+
+.custom-prüfen-btn {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
+  transition: background-color 0.2s, transform 0.1s;
+}
+.custom-prüfen-btn:hover {
+  background-color: #d48416 !important;
+}
+.custom-prüfen-btn:active {
+  transform: scale(0.98);
+}
+
+.style-btn-text {
+  font-size: 0.9rem;
+}
+.arrow-icon {
+  font-size: 0.7rem;
+}
+@media (min-width: 768px) {
+  .style-btn-text {
+    font-size: 1rem;
+  }
+  .arrow-icon {
+    font-size: 0.75rem;
+  }
+}
 h3.text-center {
     font-weight: 700;
     background: linear-gradient(90deg, #990000, #d07010, #c67a15, #9f7633, #88734f, #786d62, #99004d);
