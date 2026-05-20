@@ -67,3 +67,19 @@ Made static product page from mock work as a Vue project:
 - `App.vue` is now using `Header.vue`, `Logo.vue`, and `AnfrageCard.vue` components for better structure.
 - Styles specific to components have been moved from `styles.css` into their respective `<style scoped>` sections.
 - Logic specific to components has been moved into their respective `<script setup>` sections.
+
+
+### Iteration 5: Low-Level components
+
+- Introduced some low-level reusable components:
+  - `Button.vue`: A reusable button component with different variants (header, AnfrageCard).
+  - `LogoAndTitle.vue`: reusable for different views.
+
+### Iteration 6: Added Vue-Router and anfrage detail view
+
+- Integrated Vue-Router as preparation to adding different views (`router/index.js`)
+  - Important note: When hosting the app not under / on the server (as we are doing with GitHub Pages), `createWebHistory` must be provided with the app path!
+  - also `main.js` must be imported relatively
+- Updated `App.vue` to include `<router-view>` for rendering routed components.
+- Created route `/` to `AnfragenView.vue` for the Anfrage listing page
+- Added a new anfrage detail view that is linked from `AnfrageCard.vue` and can be accessed via `/anfrage/:id`.

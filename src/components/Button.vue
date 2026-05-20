@@ -27,8 +27,8 @@
 
     <button 
         v-else-if="type === 'AnfrageCard'"
-        @click.prevent="onClick ? onClick() : null"
-        class="btn text-white fw-bold w-100 py-2 d-flex align-items-center justify-content-center custom-prüfen-btn"
+        @click="onClick ? onClick() : null"
+        class="btn text-white fw-bold py-2 d-flex align-items-center justify-content-center custom-prüfen-btn"
         style="background-color: #f0a530; border-radius: 15px; border: none;"
     >
         <span class="style-btn-text">{{ text }}</span>
