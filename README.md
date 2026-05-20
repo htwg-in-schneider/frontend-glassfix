@@ -95,3 +95,16 @@ Made static product page from mock work as a Vue project:
 
 - Replaced static anfrage data with data from our REST backend
 - Adapted `AnfrageCardCard.vue`, `AnfragenView.vue` and `AnfrageDetail.vue` accordingly.
+
+### Iteration 9: Complete CRUD of Anfragen for Kunden via REST
+
+- Added `CreateAnfrageSchritt(1 bis 3).vue` views to allow users to create new anfragen via a form.
+  - Simple implementation with JS alerts for success/error handling.
+- Used the CreateAnfrage steps views in order to reuse the views for updating an Anfrage.
+  - Simple implementation with JS alerts for success/error handling.
+- Integrated API calls for creating, updating, and deleting products:
+  - **Create**: Sends a `POST` request to `/api/produanfragect`.
+  - **Update**: Sends a `PUT` request to `/api/anfrage/:id`.
+  - **Delete**: Sends a `DELETE` request to `/api/anfrage/:id`.
+- Added a Dashboard in order to be able to call the different functions (REQUESTS: POST, GET, PUT and DELETE)
+- Updated the view AnfrageDetail.vue and changed the button to `bearbeiten` in order to start an update of the Anfrage.

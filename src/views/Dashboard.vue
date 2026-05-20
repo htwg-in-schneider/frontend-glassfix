@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+
 import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
 
@@ -93,9 +94,9 @@ const menueKacheln = computed(() => {
     ];
   }
 
-  // Standard-Kacheln für Kunden (KUNDE)
+  // Standard-Kacheln für Kunden (KUNDE) -> Ahora apunta a tu nuevo paso 1 multinivel
   return [
-    { link: '/neue-anfrage', text: 'Neue Anfrage', icon: 'plus-circle' },
+    { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
     { link: '/anfragen', text: 'Auskünfte', icon: 'envelope', badge: 1 },
     einstellungenKachel,
     profilKachel
@@ -136,8 +137,8 @@ const formatiereDatum = (datumString) => {
     <Header text="Startseite" />
     <div class="row m-0 text-center justify-content-center pt-4">
       <LogoAndTitle
-      title="Hallo {{ benutzername }}!"
-      subtitle="Schön, dass Sie wieder da sind!"/>
+      :title="`Hallo ${benutzername}!`"
+      :subtitle="`Schön, dass Sie wieder da sind!`"/>
     </div>
 
     <div class="px-4 mt-4">
@@ -192,7 +193,7 @@ const formatiereDatum = (datumString) => {
                   <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
                 </svg>
 
-                <svg v-else-if="kachel.icon === 'plus-circle'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
+                <svg v-if="kachel.icon === 'plus-circle'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
                   <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
                   <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
                 </svg>
@@ -224,13 +225,11 @@ const formatiereDatum = (datumString) => {
 </template>
 
 <style scoped>
-/* Begrenzung der Dashboard-Breite für ein einheitliches mobiles Erscheinungsbild */
 .dashboard-container {
   max-width: 430px; 
   border: 1px solid #dee2e6;
 }
 
-/* Orangefarbene obere Leiste */
 .dashboard-header {
   background-color: #f0a530;
   border-bottom-left-radius: 4px;
@@ -242,7 +241,6 @@ const formatiereDatum = (datumString) => {
   object-fit: contain;
 }
 
-/* Stil der zentralen Inhaltsboxen */
 .historie-box {
   border: 1.5px solid #000000;
   border-radius: 18px;
@@ -250,7 +248,6 @@ const formatiereDatum = (datumString) => {
   box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 12px;
 }
 
-/* Stil der einzelnen Tabellen-/Listenzeilen */
 .historie-item {
   border: 1.5px solid #000000 !important;
   border-radius: 14px;
@@ -266,7 +263,6 @@ const formatiereDatum = (datumString) => {
   font-size: 0.75rem;
 }
 
-/* --- FARB-DESIGN DER BADGES LAUT PROTOTYP --- */
 .status-badge {
   font-size: 0.8rem;
   padding: 8px 14px;
@@ -274,15 +270,14 @@ const formatiereDatum = (datumString) => {
   font-weight: bold;
 }
 .status-arbeit, .status-offen {
-  background-color: #e67e22 !important; /* Orangefarbenes Badge */
+  background-color: #e67e22 !important;
   color: white;
 }
 .status-vollendet, .status-freigegeben {
-  background-color: #616161 !important; /* Dunkelgraues Badge */
+  background-color: #616161 !important;
   color: white;
 }
 
-/* --- KACHEL-BUTTONS (COMIC-STIL SCHATTEN) --- */
 .menu-tile {
   background-color: white;
   border: 1.5px solid #000000;
@@ -293,7 +288,6 @@ const formatiereDatum = (datumString) => {
   cursor: pointer;
 }
 
-/* Klick-Effekt: Kachel bewegt sich leicht nach unten rechts */
 .menu-tile:active {
   transform: translate(2px, 2px);
   box-shadow: none;

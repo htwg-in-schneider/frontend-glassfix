@@ -1,12 +1,14 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 
 import Header from '../components/Header.vue';
 import LogoAndTitle from '../components/LogoAndTitle.vue';
 import Button from '../components/Button.vue';
+import { createAnfrageStore } from '@/store/createAnfrageStore';
 
 const route = useRoute();
+const router = useRouter();
 
 // --- API INTEGRATION VARIABLES (DEUTSCH) ---
 const anfrage = ref(null);               // Speichert die geladene Anfrage vom Backend
@@ -17,10 +19,10 @@ const fehlerMeldung = ref('');           // Speichert Fehlermeldungen bei Fehlsc
 const ladeAnfrageDetailVomBackend = async () => {
   istAmLaden.value = true;
   fehlerMeldung.value = '';
-  
+
   try {
     const anfrageId = route.params.id;
-    
+
     // Anfrage an den Endpunkt '/api/anfrage/{id}' mit aktivierten Session-Credentials
     const antwort = await fetch(`http://localhost:8081/api/anfrage/${anfrageId}`, {
       method: 'GET',
@@ -57,10 +59,48 @@ onMounted(() => {
 
 // Da 'kunde' im Backend ein Benutzer-Objekt ist, lesen wir dynamisch den Benutzernamen aus
 const kundenName = computed(() => {
-  return anfrage.value && anfrage.value.kunde 
-    ? anfrage.value.kunde.benutzername 
+  return anfrage.value && anfrage.value.kunde
+    ? anfrage.value.kunde.benutzername
     : 'Unbekannt';
 });
+function geheZuBearbeiten() {
+  if (anfrage.value) {
+    createAnfrageStore.id = anfrage.value.id;
+    createAnfrageStore.kategorie = anfrage.value.kategorie;
+    
+    createAnfrageStore.beschreibung = anfrage.value.beschreibung || '';
+    createAnfrageStore.fragen = anfrage.value.fragen || '';
+    createAnfrageStore.bildUrl = anfrage.value.bildUrl || '';
+
+    router.push('/create-anfrage/schritt-1');
+  } else {
+    console.warn("Bearbeiten nicht möglich: Anfragedaten sind noch nicht geladen.");
+  }
+}
+
+function loescheAnfrage() {
+  if (confirm('Sind Sie sicher, dass Sie diese Anfrage löschen möchten?')) {
+    fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    })
+    .then(antwort => {
+      if (antwort.ok) {
+        alert('Anfrage erfolgreich gelöscht!');
+        router.push('/dashboard');
+      } else if (antwort.status === 401) {
+        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
+        router.push('/login');
+      } else {
+        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+      }
+    })
+    .catch(fehler => {
+      console.error('Netzwerkfehler:', fehler);
+      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+    });
+  }
+}
 </script>
 
 <template>
@@ -85,10 +125,7 @@ const kundenName = computed(() => {
 
     <div v-else-if="anfrage">
       <div class="row m-0 text-center justify-content-center pt-4">
-        <LogoAndTitle
-          :title="`${anfrage.kategorie} #${anfrage.id}`"
-          :subtitle="`Von ${kundenName}`"
-        />
+        <LogoAndTitle :title="`${anfrage.kategorie} #${anfrage.id}`" :subtitle="`Von ${kundenName}`" />
       </div>
 
       <section class="px-4 pb-5">
@@ -122,18 +159,17 @@ const kundenName = computed(() => {
             <strong>Bilder</strong>
             <div class="row mt-2 g-3">
               <div class="col-6">
-                <img
-                  :src="anfrage.bildUrl"
-                  alt="Glas Objekt"
-                  class="img-fluid detail-image"
-                >
+                <img :src="anfrage.bildUrl" alt="Glas Objekt" class="img-fluid detail-image">
               </div>
             </div>
           </div>
         </div>
 
         <div class="d-flex justify-content-center mt-4">
-          <Button :text="'Auskunft erstellen'" :type="'AnfrageCard'" />
+          <Button :text="'Bearbeiten'" :type="'AnfrageCard'" :onClick="geheZuBearbeiten" />
+        </div>
+        <div class="d-flex justify-content-center mt-4">
+          <Button :text="'Löschen'" :type="'default'" :onClick="loescheAnfrage"/>
         </div>
       </section>
     </div>
