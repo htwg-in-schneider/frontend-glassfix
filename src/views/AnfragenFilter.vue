@@ -16,7 +16,7 @@ function applyFilter() {
 
 <template>
   <div class="container-fluid bg-white min-vh-100 p-0 anfragen-filter-view">
-    <Header text="Startseite" />
+    <Header text="Dashboard" />
     <div class="row m-0 text-center justify-content-center pt-4">
       <LogoAndTitle
       title="Anfragen Filter"

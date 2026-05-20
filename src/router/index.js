@@ -5,6 +5,7 @@ import AnfrageDetail from '../views/AnfrageDetail.vue';
 import AnfragenFilter from '../views/AnfragenFilter.vue';
 import Startseite from '../views/Startseite.vue';
 import Login from '../views/Login.vue';
+import Dashboard from '../views/Dashboard.vue';
 
 const routes = [
   {
@@ -30,6 +31,11 @@ const routes = [
     path:'/login',
     name: 'login',
     component: Login
+  },
+  {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: Dashboard
   }
 ];
 

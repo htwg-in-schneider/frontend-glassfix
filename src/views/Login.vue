@@ -36,7 +36,7 @@ const manejarLogin = async () => {
       console.log('Login erfolgreich:', data);
       
       
-      router.push('/filter');
+      router.push('/dashboard');
     } else {
       
       const textoError = await response.text();

@@ -21,7 +21,7 @@ function handleHeaderClick() {
   }
 
   if (props.text === 'Dashboard') {
-    null;
+    router.push('/dashboard');
   }
   if (props.text === 'Startseite') {
     router.push('/');
