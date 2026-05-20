@@ -237,3 +237,58 @@ h3.text-center {
         height: 80px;
     }
 }
+
+/* Iteration 7: Filter view */
+
+.filter-header {
+    background-color: #f0a530;
+}
+
+.custom-filter-btn {
+    border-radius: 10px;
+    font-size: 1rem;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.15);
+}
+
+.filter-arrow {
+    color: #d48416;
+    font-size: 1.2rem;
+}
+
+.filter-logo {
+    max-height: 130px;
+}
+
+.filter-title {
+    font-size: 1.4rem;
+    color: #111;
+}
+
+.filter-subtitle {
+    font-size: 0.9rem;
+}
+
+.filter-card {
+    border: 2px solid #111;
+    border-radius: 18px;
+    background-color: rgba(255, 255, 255, 0.9);
+}
+
+.custom-input {
+    border-radius: 14px;
+    border: 1px solid #555;
+    font-size: 0.9rem;
+}
+
+.apply-btn {
+    background-color: #f28c00;
+    color: white;
+    border-radius: 18px;
+}
+
+.apply-btn:hover {
+    background-color: #d97c00;
+    color: white;
+}
+
+

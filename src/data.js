@@ -2,15 +2,17 @@ export const anfragen = [
     {
         id: 1,
         kategorie: "Kategorie 1",
+        status: "Offen",
         kunde: "Kunde A",
         beschreibung: "Beschreibung der Anfrage 1",
-        fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...", 
+        fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
         erstellungsdatum: "28.4.2026",
         bildUrl: "/ProjektBilder/Leistung1.png"
     },
     {
         id: 2,
         kategorie: "Kategorie 2",
+        status: "In Bearbeitung",
         kunde: "Kunde B",
         beschreibung: "Beschreibung der Anfrage 2",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
@@ -20,6 +22,7 @@ export const anfragen = [
     {
         id: 3,
         kategorie: "Kategorie 3",
+        status: "Abgeschlossen",
         kunde: "Kunde C",
         beschreibung: "Beschreibung der Anfrage 3",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",
@@ -29,6 +32,7 @@ export const anfragen = [
     {
         id: 4,
         kategorie: "Kategorie 4",
+        status: "Offen",
         kunde: "Kunde D",
         beschreibung: "Beschreibung der Anfrage 4",
         fragen: "Frage 1: ...\nFrage 2: ...\nFrage 3: ...",

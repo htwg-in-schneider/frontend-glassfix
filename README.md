@@ -83,3 +83,10 @@ Made static product page from mock work as a Vue project:
 - Updated `App.vue` to include `<router-view>` for rendering routed components.
 - Created route `/` to `AnfragenView.vue` for the Anfrage listing page
 - Added a new anfrage detail view that is linked from `AnfrageCard.vue` and can be accessed via `/anfrage/:id`.
+
+### Iteration 7: Filter management with Pinia
+
+- Integrated Pinia for simple global filter (Filter is saved through different views):
+  - Installed Pinia: `npm install pinia`.
+  - Registered Pinia in `src/main.js` with `createPinia()` and `app.use(pinia)`.
+  - when returning to the AnfragenView.vue the filter is still applied.

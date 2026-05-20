@@ -12,8 +12,16 @@ const props = defineProps({
 const router = useRouter();
 
 function handleHeaderClick() {
-  if (props.text === 'Zurück' || props.text === 'Anfragen') {
+  if (props.text === 'Filter') {
+    router.push('/filter');
+  }
+
+  if (props.text === 'Anfragen') {
     router.push('/');
+  }
+
+  if (props.text === 'Dashboard') {
+    null;
   }
 }
 </script>
@@ -21,10 +29,10 @@ function handleHeaderClick() {
 <template>
   <div class="row m-0 p-3 align-items-center" style="background-color: #f0a530;">
     <div class="col-auto">
-      <Button 
-        :text="text" 
-        :type="'header'" 
-        :onClick="handleHeaderClick" 
+      <Button
+        :text="text"
+        :type="'header'"
+        :onClick="handleHeaderClick"
       />
     </div>
   </div>

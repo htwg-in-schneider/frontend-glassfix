@@ -2,7 +2,7 @@
     defineProps({
         type: {
             type: String,
-            default: 'header',
+            default: 'default',
         },
         text: {
             type: String,
@@ -33,6 +33,15 @@
     >
         <span class="style-btn-text">{{ text }}</span>
         <span class="ms-2 bg-white text-dark d-flex align-items-center justify-content-center rounded-circle arrow-icon" style="width: 20px; height: 20px;">❯</span>
+    </button>
+
+    <button 
+        v-else-if="type === 'default'"
+        @click="onClick ? onClick() : null"
+        class="btn btn-light d-flex align-items-center fw-bold px-3 py-1 custom-filter-btn" 
+        style="border-radius: 10px; font-size: 1.1rem;"
+    >
+        {{ text }}
     </button>
 </template>
 <style scoped>

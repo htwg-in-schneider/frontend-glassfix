@@ -2,11 +2,17 @@ import { createRouter, createWebHistory } from 'vue-router';
 
 import AnfragenView from '../views/AnfragenView.vue';
 import AnfrageDetail from '../views/AnfrageDetail.vue';
+import AnfragenFilter from '../views/AnfragenFilter.vue';
 
 const routes = [
   {
     path: '/',
     component: AnfragenView
+  },
+  {
+    path: '/filter',
+    name: 'anfragen-filter',
+    component: AnfragenFilter
   },
   {
     path: '/anfrage/:id',
