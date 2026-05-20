@@ -1,4 +1,5 @@
 <script setup>
+    import Button from './Button.vue';
     defineProps({
         anfrage: {
             type: Object,
@@ -43,14 +44,11 @@
             </div>
 
             <div class="flex-shrink-0 style-btn-container">
-              <button 
-                @click.prevent="showAlert(anfrage.beschreibung)"
-                class="btn text-white fw-bold w-100 py-2 d-flex align-items-center justify-content-center custom-prüfen-btn"
-                style="background-color: #f0a530; border-radius: 15px; border: none;"
-              >
-                <span class="style-btn-text">Details</span>
-                <span class="ms-2 bg-white text-dark d-flex align-items-center justify-content-center rounded-circle arrow-icon" style="width: 20px; height: 20px;">❯</span>
-              </button>
+              <Button 
+                :text="'Details'" 
+                :type="'AnfrageCard'" 
+                @click="showAlert(anfrage.beschreibung)"
+              />
             </div>
 
           </div> 
@@ -96,28 +94,5 @@
             font-size: 0.85rem;
         }
     }
-    .custom-prüfen-btn {
-        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-        transition: background-color 0.2s, transform 0.1s;
-    }
-    .custom-prüfen-btn:hover {
-        background-color: #d48416 !important;
-    }
-    .custom-prüfen-btn:active {
-        transform: scale(0.98);
-    }
-    .style-btn-text {
-        font-size: 0.9rem;
-    }
-    .arrow-icon {
-    font-size: 0.7rem;
-    }
-    @media (min-width: 768px) {
-        .style-btn-text {
-            font-size: 1rem;
-        }
-        .arrow-icon {
-            font-size: 0.75rem;
-        }
-    }
+    
 </style>
