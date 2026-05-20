@@ -90,3 +90,8 @@ Made static product page from mock work as a Vue project:
   - Installed Pinia: `npm install pinia`.
   - Registered Pinia in `src/main.js` with `createPinia()` and `app.use(pinia)`.
   - when returning to the AnfragenView.vue the filter is still applied.
+
+### Iteration 8b: Dynamic anfrage loading via REST backend (real data)
+
+- Replaced static anfrage data with data from our REST backend
+- Adapted `AnfrageCardCard.vue`, `AnfragenView.vue` and `AnfrageDetail.vue` accordingly.

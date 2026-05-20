@@ -1,16 +1,65 @@
 <script setup>
-import { computed } from 'vue';
+import { ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 
 import Header from '../components/Header.vue';
 import LogoAndTitle from '../components/LogoAndTitle.vue';
 import Button from '../components/Button.vue';
-import { anfragen } from '../data.js';
 
 const route = useRoute();
 
-const anfrage = computed(() => {
-  return anfragen.find(a => String(a.id) === String(route.params.id)) || null;
+// --- API INTEGRATION VARIABLES (DEUTSCH) ---
+const anfrage = ref(null);               // Speichert die geladene Anfrage vom Backend
+const istAmLaden = ref(true);            // Status-Indikator für den Ladevorgang
+const fehlerMeldung = ref('');           // Speichert Fehlermeldungen bei Fehlschlägen
+
+// Funktion zum Laden der spezifischen Anfrage anhand der ID aus der URL
+const ladeAnfrageDetailVomBackend = async () => {
+  istAmLaden.value = true;
+  fehlerMeldung.value = '';
+  
+  try {
+    const anfrageId = route.params.id;
+    
+    // Anfrage an den Endpunkt '/api/anfrage/{id}' mit aktivierten Session-Credentials
+    const antwort = await fetch(`http://localhost:8081/api/anfrage/${anfrageId}`, {
+      method: 'GET',
+      credentials: 'include', // Sendet das JSESSIONID-Cookie mit
+      headers: {
+        'Accept': 'application/json'
+      }
+    });
+
+    if (antwort.ok) {
+      const daten = await antwort.json();
+      anfrage.value = daten;
+    } else if (antwort.status === 401) {
+      fehlerMeldung.value = 'Nicht autorisiert. Bitte melden Sie sich zuerst an.';
+    } else if (antwort.status === 403) {
+      fehlerMeldung.value = 'Zugriff verweigert. Sie dürfen diese Anfrage nicht einsehen.';
+    } else if (antwort.status === 404) {
+      fehlerMeldung.value = 'Die gesuchte Anfrage existiert nicht.';
+    } else {
+      fehlerMeldung.value = 'Fehler beim Laden der Anfragedetails.';
+    }
+  } catch (fehler) {
+    console.error('Netzwerkfehler:', fehler);
+    fehlerMeldung.value = 'Es konnte keine Verbindung zum Server hergestellt werden.';
+  } finally {
+    istAmLaden.value = false;
+  }
+};
+
+// Automatischer Aufruf, wenn die Detailseite geöffnet wird
+onMounted(() => {
+  ladeAnfrageDetailVomBackend();
+});
+
+// Da 'kunde' im Backend ein Benutzer-Objekt ist, lesen wir dynamisch den Benutzernamen aus
+const kundenName = computed(() => {
+  return anfrage.value && anfrage.value.kunde 
+    ? anfrage.value.kunde.benutzername 
+    : 'Unbekannt';
 });
 </script>
 
@@ -18,11 +67,27 @@ const anfrage = computed(() => {
   <div class="container-fluid bg-white min-vh-100 p-0 shadow-sm">
     <Header text="Anfragen" />
 
-    <div v-if="anfrage">
+    <div v-if="istAmLaden" class="text-center py-5">
+      <div class="spinner-border text-warning" role="status">
+        <span class="visually-hidden">Laden...</span>
+      </div>
+      <p class="mt-2 text-muted">Details werden geladen...</p>
+    </div>
+
+    <div v-else-if="fehlerMeldung" class="container text-center py-5">
+      <div class="alert alert-danger mx-auto" style="max-width: 500px;" role="alert">
+        {{ fehlerMeldung }}
+      </div>
+      <router-link to="/" class="text-decoration-none mt-3 d-inline-block">
+        <Button :text="'Zurück zur Übersicht'" :type="'AnfrageCard'" />
+      </router-link>
+    </div>
+
+    <div v-else-if="anfrage">
       <div class="row m-0 text-center justify-content-center pt-4">
         <LogoAndTitle
           :title="`${anfrage.kategorie} #${anfrage.id}`"
-          :subtitle="`Von ${anfrage.kunde}`"
+          :subtitle="`Von ${kundenName}`"
         />
       </div>
 
@@ -35,12 +100,12 @@ const anfrage = computed(() => {
 
           <p class="mb-4">
             <strong>Status:</strong><br>
-            {{ anfrage.status }}
+            <span class="badge bg-secondary">{{ anfrage.status }}</span>
           </p>
 
           <p class="mb-4">
             <strong>Erstellungsdatum:</strong><br>
-            {{ anfrage.erstellungsdatum }}
+            {{ anfrage.erstellungsdatum.substring(0, 10) || 'Nicht angegeben' }}
           </p>
 
           <p class="mb-4">
@@ -50,25 +115,16 @@ const anfrage = computed(() => {
 
           <p class="mb-4">
             <strong>Fragen (optional)</strong><br>
-            <span class="fragen-text">{{ anfrage.fragen }}</span>
+            <span class="fragen-text">{{ anfrage.fragen || 'Keine Fragen hinterlegt.' }}</span>
           </p>
 
-          <div class="mb-4">
+          <div v-if="anfrage.bildUrl" class="mb-4">
             <strong>Bilder</strong>
-
             <div class="row mt-2 g-3">
               <div class="col-6">
                 <img
                   :src="anfrage.bildUrl"
                   alt="Glas Objekt"
-                  class="img-fluid detail-image"
-                >
-              </div>
-
-              <div class="col-6">
-                <img
-                  :src="anfrage.bildUrl"
-                  alt="Glas Detail"
                   class="img-fluid detail-image"
                 >
               </div>
@@ -80,14 +136,6 @@ const anfrage = computed(() => {
           <Button :text="'Auskunft erstellen'" :type="'AnfrageCard'" />
         </div>
       </section>
-    </div>
-
-    <div v-else class="text-center py-5">
-      <h2 class="fw-bold">Anfrage wurde nicht gefunden.</h2>
-
-      <router-link to="/" class="text-decoration-none">
-        <Button :text="'Zurück zur Übersicht'" :type="'AnfrageCard'" />
-      </router-link>
     </div>
   </div>
 </template>

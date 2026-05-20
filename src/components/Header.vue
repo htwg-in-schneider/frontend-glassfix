@@ -17,11 +17,14 @@ function handleHeaderClick() {
   }
 
   if (props.text === 'Anfragen') {
-    router.push('/');
+    router.push('/anfragen');
   }
 
   if (props.text === 'Dashboard') {
     null;
+  }
+  if (props.text === 'Startseite') {
+    router.push('/');
   }
 }
 </script>

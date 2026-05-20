@@ -10,13 +10,13 @@ const router = useRouter()
 const filterStore = useAnfragenFilterStore()
 
 function applyFilter() {
-  router.push('/')
+  router.push('/anfragen')
 }
 </script>
 
 <template>
   <div class="container-fluid bg-white min-vh-100 p-0 anfragen-filter-view">
-    <Header text="Dashboard" />
+    <Header text="Startseite" />
     <div class="row m-0 text-center justify-content-center pt-4">
       <LogoAndTitle
       title="Anfragen Filter"
