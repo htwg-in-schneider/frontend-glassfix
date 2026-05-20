@@ -7,9 +7,6 @@ defineProps({
   }
 });
 
-function showAlert(description) {
-  alert(description);
-}
 </script>
 <template>
   <div class="card h-100 shadow-sm custom-anfrage-card d-flex flex-row flex-md-column justify-content-between"
