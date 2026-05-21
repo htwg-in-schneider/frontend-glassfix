@@ -32,8 +32,8 @@ async function speichereAnfrage() {
     kategorie: createAnfrageStore.kategorie,
     beschreibung: createAnfrageStore.beschreibung,
     fragen: createAnfrageStore.fragen,
-    bildUrl: createAnfrageStore.bildUrl,
-    status: createAnfrageStore.id ? undefined : "OFFEN" 
+    bildUrl: createAnfrageStore.bildUrl
+  
   };
 
 
