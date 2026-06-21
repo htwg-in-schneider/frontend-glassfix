@@ -1,6 +1,9 @@
 <script setup>
-    import router from '@/router';
+import router from '@/router';
 import { computed } from 'vue';
+import Button from '@/components/Button.vue';
+import { useAuth0 } from '@auth0/auth0-vue'
+const { loginWithRedirect} = useAuth0()
 
 </script>
 
@@ -50,7 +53,7 @@ import { computed } from 'vue';
                   <a class="nav-link" href="#Rezensionen">Rezensionen</a>
                 </li>
                 <li class="nav-item">
-                    <router-link class="nav-link btn costum-pill-cta" to="/login">Anmelden</router-link>
+                    <Button type="login" :text="'Anmelden'" :onClick="() => loginWithRedirect({ appState: { target: '/dashboard' } })" class="nav-link text-start text-md-center w-100 costum-pill-cta"/>
                 </li>
               </ul>
             </div>

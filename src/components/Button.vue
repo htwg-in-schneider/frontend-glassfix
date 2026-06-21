@@ -1,4 +1,6 @@
 <script setup>
+
+
     defineProps({
         type: {
             type: String,
@@ -13,6 +15,7 @@
             default: null,
         }
     });
+
 </script>
 <template>
     <button 
@@ -41,6 +44,14 @@
         class="btn btn-light d-flex align-items-center fw-bold px-3 py-1 custom-filter-btn" 
         style="border-radius: 10px; font-size: 1.1rem;"
     >
+        {{ text }}
+    </button>
+    <button 
+        v-else-if="type === 'login'"
+        @click="onClick ? onClick() : null"
+        class="btn text-white fw-bold py-2 d-flex align-items-center justify-content-center custom-prüfen-btn" 
+        style="background-color: #f0a530; border-radius: 15px; border: none;"
+    >   
         {{ text }}
     </button>
 </template>

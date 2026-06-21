@@ -10,10 +10,9 @@ import { createAnfrageStore } from '@/store/createAnfrageStore';
 const route = useRoute();
 const router = useRouter();
 
-// --- API INTEGRATION VARIABLES (DEUTSCH) ---
-const anfrage = ref(null);               // Speichert die geladene Anfrage vom Backend
-const istAmLaden = ref(true);            // Status-Indikator für den Ladevorgang
-const fehlerMeldung = ref('');           // Speichert Fehlermeldungen bei Fehlschlägen
+const anfrage = ref(null);               
+const istAmLaden = ref(true);            
+const fehlerMeldung = ref('');           
 
 // Funktion zum Laden der spezifischen Anfrage anhand der ID aus der URL
 const ladeAnfrageDetailVomBackend = async () => {
@@ -23,10 +22,9 @@ const ladeAnfrageDetailVomBackend = async () => {
   try {
     const anfrageId = route.params.id;
 
-    // Anfrage an den Endpunkt '/api/anfrage/{id}' mit aktivierten Session-Credentials
     const antwort = await fetch(`http://localhost:8081/api/anfrage/${anfrageId}`, {
       method: 'GET',
-      credentials: 'include', // Sendet das JSESSIONID-Cookie mit
+      credentials: 'include', 
       headers: {
         'Accept': 'application/json'
       }
@@ -52,12 +50,10 @@ const ladeAnfrageDetailVomBackend = async () => {
   }
 };
 
-// Automatischer Aufruf, wenn die Detailseite geöffnet wird
 onMounted(() => {
   ladeAnfrageDetailVomBackend();
 });
 
-// Da 'kunde' im Backend ein Benutzer-Objekt ist, lesen wir dynamisch den Benutzernamen aus
 const kundenName = computed(() => {
   return anfrage.value && anfrage.value.kunde
     ? anfrage.value.kunde.benutzername

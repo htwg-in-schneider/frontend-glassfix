@@ -7,28 +7,26 @@ import LogoAndTitle from '@/components/LogoAndTitle.vue';
 
 const router = useRouter();
 
-// --- REAKTIVE VARIABLEN (DEUTSCH) ---
 const benutzername = ref('Benutzer');
 const benutzerRolle = ref('KUNDE'); // Mögliche Werte: KUNDE, FACHKRAFT, GESCHAEFTSFUEHRER
 const anfragenListe = ref([]);
 const istAmLaden = ref(true);
 
-// --- BACKEND-DATEN LADEN ---
 const ladeDashboardDaten = async () => {
   istAmLaden.value = true;
   try {
-    // 1. Aktuellen Benutzer und seine Rolle vom neuen /me Endpunkt abrufen
+    // 1. Aktuellen Benutzer und seine Rolle vom /me Endpunkt abrufen
     const benutzerAntwort = await fetch('http://localhost:8081/api/auth/me', {
       method: 'GET',
-      credentials: 'include', // Erforderlich für die HttpSession (JSESSIONID)
+      credentials: 'include',
     });
 
     if (benutzerAntwort.ok) {
       const benutzerDaten = await benutzerAntwort.json();
       benutzername.value = benutzerDaten.benutzername;
-      benutzerRolle.value = benutzerDaten.rolle; // Setzt die Rolle dynamisch basierend auf der DB
+      benutzerRolle.value = benutzerDaten.rolle; 
     } else {
-      // Wenn der Benutzer nicht eingeloggt ist (401), direkt zum Login weiterleiten
+      // Wenn der Benutzer nicht eingeloggt (401), direkt zum Login.vue
       router.push('/login');
       return;
     }
@@ -54,8 +52,6 @@ const ladeDashboardDaten = async () => {
 onMounted(() => {
   ladeDashboardDaten();
 });
-
-// --- DYNAMISCHE COMPUTED-PROPERTIES (DEUTSCH) ---
 
 // Dynamischer Begrüßungstext basierend auf der Rolle
 const willkommenText = computed(() => {
