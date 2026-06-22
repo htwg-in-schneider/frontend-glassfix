@@ -108,3 +108,14 @@ Made static product page from mock work as a Vue project:
   - **Delete**: Sends a `DELETE` request to `/api/anfrage/:id`.
 - Added a Dashboard in order to be able to call the different functions (REQUESTS: POST, GET, PUT and DELETE)
 - Updated the view AnfrageDetail.vue and changed the button to `bearbeiten` in order to start an update of the Anfrage.
+
+## Iteratio 10: User Authentication with Auth0
+
+- Integrated Auth0 for user authentication.
+  - Settings in `.env.development` have to be adapted to your Auth0 application
+- Added `UserMenu` component to the Navbar:
+  - Handles Login/Logout.
+  - Displays user avatar when authenticated.
+  - Optimized for mobile view (avatar visible outside hamburger menu).
+- Added `/profile` page to display user information from Auth0 and OAuth2 debug info
+- Updated Views to call Data from backend according to the role of the user
