@@ -71,7 +71,7 @@
         transition: background-color 0.2s, transform 0.1s;
     }
     .custom-prüfen-btn:hover {
-        background-color: #d48416 !important;
+        background-color: #f0a530 !important;
     }
     .custom-prüfen-btn:active {
         transform: scale(0.98);

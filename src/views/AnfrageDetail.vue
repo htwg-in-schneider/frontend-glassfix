@@ -6,6 +6,11 @@ import Header from '../components/Header.vue';
 import LogoAndTitle from '../components/LogoAndTitle.vue';
 import Button from '../components/Button.vue';
 import { createAnfrageStore } from '@/store/createAnfrageStore';
+import { useAuth0 } from '@auth0/auth0-vue';
+
+const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+const bearerToken = ref('');
+const error = ref('');
 
 const route = useRoute();
 const router = useRouter();
@@ -14,19 +19,50 @@ const anfrage = ref(null);
 const istAmLaden = ref(true);            
 const fehlerMeldung = ref('');           
 
-// Funktion zum Laden der spezifischen Anfrage anhand der ID aus der URL
-const ladeAnfrageDetailVomBackend = async () => {
+const benutzerId = ref(null);
+const benutzerRolle = ref('');
+
+const getBenutzerRolle = async () => {
   istAmLaden.value = true;
   fehlerMeldung.value = '';
+  const token = await getAccessTokenSilently();
+  bearerToken.value = token;
 
+    try{
+    const benutzerAntwort = await fetch('http://localhost:8081/api/auth/me', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (benutzerAntwort.ok) {
+      const benutzerDaten = await benutzerAntwort.json();
+      benutzerRolle.value = benutzerDaten.rolle; 
+      benutzerId.value = benutzerDaten.id;
+    } else {
+      console.warn('Das Backend hat den Token abgelehnt (401). Leite weiter auf /');
+      router.push('/');
+      return;
+    }
+  } catch (fehler) {
+      console.error('Netzwerkfehler beim Abrufen der Benutzerrolle:', fehler);
+      router.push('/');
+      return;
+  }
+};
+
+// Funktion zum Laden der spezifischen Anfrage anhand der ID aus der URL
+const ladeAnfrageDetailVomBackend = async () => {
   try {
     const anfrageId = route.params.id;
 
     const antwort = await fetch(`http://localhost:8081/api/anfrage/${anfrageId}`, {
       method: 'GET',
-      credentials: 'include', 
       headers: {
-        'Accept': 'application/json'
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
       }
     });
 
@@ -50,8 +86,9 @@ const ladeAnfrageDetailVomBackend = async () => {
   }
 };
 
-onMounted(() => {
-  ladeAnfrageDetailVomBackend();
+onMounted(async () => {
+  await getBenutzerRolle();
+  await ladeAnfrageDetailVomBackend();
 });
 
 const kundenName = computed(() => {
@@ -78,7 +115,10 @@ function loescheAnfrage() {
   if (confirm('Sind Sie sicher, dass Sie diese Anfrage löschen möchten?')) {
     fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
       method: 'DELETE',
-      credentials: 'include'
+      headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
+      }
     })
     .then(antwort => {
       if (antwort.ok) {
@@ -97,6 +137,70 @@ function loescheAnfrage() {
     });
   }
 }
+
+function anfragePruefen(){
+  fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${bearerToken.value}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      ...anfrage.value,
+      status: 'IN_PRUEFUNG'
+      })
+    })
+  .then(antwort => {
+    if (antwort.ok) {
+      alert('Anfrage erfolgreich geprüft!');
+      router.push(`/dashboard`);
+    } else if (antwort.status === 401) {
+      alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
+        router.push('/');
+      } else {
+        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+      }
+    })
+    .catch(fehler => {
+      console.error('Netzwerkfehler:', fehler);
+      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+    });
+  }
+  
+  const anfrageAntwort = ref('');
+  function antwortAbgeben() {
+    if (!anfrageAntwort.value) {
+      alert('Bitte geben Sie eine Antwort ein.');
+      return;
+    }
+    fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+      method: 'PUT',
+      headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        ...anfrage.value,
+        antwort: anfrageAntwort.value
+      })
+    })
+    .then(antwort => {
+      if (antwort.ok) {
+        alert('Antwort erfolgreich abgegeben!');
+        router.push('/dashboard');
+      } else if (antwort.status === 401) {
+        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
+        router.push('/login');
+      } else {
+        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+      }
+    })
+    .catch(fehler => {
+      console.error('Netzwerkfehler:', fehler);
+      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+    });
+  }
+
 </script>
 
 <template>
@@ -150,6 +254,10 @@ function loescheAnfrage() {
             <strong>Fragen (optional)</strong><br>
             <span class="fragen-text">{{ anfrage.fragen || 'Keine Fragen hinterlegt.' }}</span>
           </p>
+          <div v-if="anfrage.antwort" class="mb-4">
+            <strong class="mt-4 mb-3">Antwort der Experte:</strong>
+            <p>{{ anfrage.antwort }}</p>
+          </div>
 
           <div v-if="anfrage.bildUrl" class="mb-4">
             <strong>Bilder</strong>
@@ -159,13 +267,32 @@ function loescheAnfrage() {
               </div>
             </div>
           </div>
+          
         </div>
 
-        <div class="d-flex justify-content-center mt-4">
+        
+
+        <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId" class="mb-3">
+            <label class="form-label fw-bold">Antwort *</label>
+            <textarea 
+              class="form-control custom-input" 
+              rows="3"
+              placeholder="z.B. Tiefer Kratzer auf der Vorderseite..."
+              v-model="anfrageAntwort"
+            ></textarea>
+          </div>
+          <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId" class="d-flex justify-content-center mt-3">
+            <Button :text="'Antwort Abgeben'" :type="'AnfrageCard'" :onClick="antwortAbgeben" />
+          </div>
+
+        <div v-if="benutzerRolle === 'KUNDE' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Bearbeiten'" :type="'AnfrageCard'" :onClick="geheZuBearbeiten" />
         </div>
-        <div class="d-flex justify-content-center mt-4">
+        <div v-if="benutzerRolle === 'KUNDE' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Löschen'" :type="'default'" :onClick="loescheAnfrage"/>
+        </div>
+        <div v-if="benutzerRolle === 'FACHKRAFT' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
+          <Button :text="'Prüfen'" :type="'default'" :onClick="anfragePruefen"/>
         </div>
       </section>
     </div>

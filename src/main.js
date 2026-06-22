@@ -11,8 +11,11 @@ const auth0 = createAuth0({
     domain: import.meta.env.VITE_AUTH0_DOMAIN,
     clientId: import.meta.env.VITE_AUTH0_CLIENT_ID,
     authorizationParams: {
-        audience: import.meta.env.VITE_AUTH0_AUDIENCE,
-        redirect_uri: "http://localhost:5173/frontend-glassfix/"
+        redirect_uri: "http://localhost:5173/frontend-glassfix/",
+        audience: 'https://glassfix.api'
+    },
+    onRedirectCallback: (appState) => {
+        router.replace(appState?.target || '/dashboard')
     }
 })
 

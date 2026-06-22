@@ -1,9 +1,14 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
+import { useAuth0 } from '@auth0/auth0-vue';
 
 import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
+
+const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+const bearerToken = ref('');
+const error = ref('');
 
 const router = useRouter();
 
@@ -14,11 +19,19 @@ const istAmLaden = ref(true);
 
 const ladeDashboardDaten = async () => {
   istAmLaden.value = true;
+  
   try {
-    // 1. Aktuellen Benutzer und seine Rolle vom /me Endpunkt abrufen
+    // 1. Intentar obtener el token silenciosamente
+    const token = await getAccessTokenSilently();
+    bearerToken.value = token;
+
+    // 2. Obtener los datos del endpoint /me
     const benutzerAntwort = await fetch('http://localhost:8081/api/auth/me', {
       method: 'GET',
-      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (benutzerAntwort.ok) {
@@ -26,32 +39,42 @@ const ladeDashboardDaten = async () => {
       benutzername.value = benutzerDaten.benutzername;
       benutzerRolle.value = benutzerDaten.rolle; 
     } else {
-      // Wenn der Benutzer nicht eingeloggt (401), direkt zum Login.vue
-      router.push('/login');
+      console.warn('Das Backend hat den Token abgelehnt (401). Leite weiter auf /');
+      router.push('/');
       return;
     }
 
-    // 2. Die dazugehörigen Anfragen für die Liste laden
+    // 3. Cargar la lista de consultas (Anfragen)
     const anfragenAntwort = await fetch('http://localhost:8081/api/anfrage', {
       method: 'GET',
-      credentials: 'include',
+      headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     if (anfragenAntwort.ok) {
       const anfragenDaten = await anfragenAntwort.json();
-      // Die neuesten 3 Anfragen für die Vorschau-Box herausschneiden
       anfragenListe.value = anfragenDaten.slice(0, 3);
     }
   } catch (fehler) {
     console.error('Fehler beim Laden der Dashboard-Daten:', fehler);
+    router.push('/');
   } finally {
     istAmLaden.value = false;
   }
 };
 
-onMounted(() => {
-  ladeDashboardDaten();
-});
+watch([isLoading, isAuthenticated], ([newLoading, newAuth]) => {
+  if (newLoading) return;
+
+  if (!newAuth) {
+    console.warn("Benutzer ist nicht eingeloggt. Leite weiter auf '/'");
+    router.push('/');
+  } else {
+    ladeDashboardDaten();
+  }
+}, { immediate: true });
 
 // Dynamischer Begrüßungstext basierend auf der Rolle
 const willkommenText = computed(() => {
@@ -66,16 +89,15 @@ const sektionTitel = computed(() => {
   return 'Neusten-Anfragen';
 });
 
-// Dynamisches Kachel-Menü basierend auf der Benutzerrolle (laut Mockups)
+// Dynamisches Kachel-Menü basierend auf der Benutzerrolle
 const menueKacheln = computed(() => {
-  // Gemeinsame Kacheln für die untere Reihe (immer gleich)
-  const einstellungenKachel = { link: '/einstellungen', text: 'Einstellungen', icon: 'gear' };
+  const einstellungenKachel = { link: '/Kontoeinstellungen', text: 'Einstellungen', icon: 'gear' };
   const profilKachel = { link: '/profil', text: 'Profil', icon: 'person' };
 
   if (benutzerRolle.value === 'FACHKRAFT') {
     return [
-      { link: '/anfragen-suchen', text: 'Anfragen suchen', icon: 'search' },
-      { link: '/eigene-anfragen', text: 'Eigene Anfragen', icon: 'check-circle' },
+      { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
+      { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
       einstellungenKachel,
       profilKachel
     ];
@@ -83,42 +105,23 @@ const menueKacheln = computed(() => {
   
   if (benutzerRolle.value === 'GESCHAEFTSFUEHRER') {
     return [
-      { link: '/anfragen-suchen', text: 'Anfragen suchen', icon: 'search' },
+      { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
       { link: '/von-fachkraft-bearbeitet', text: 'Von Fachkraft bearbeitet', icon: 'file-earmark-text' },
+      { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
       einstellungenKachel,
       profilKachel
     ];
   }
 
-  // Standard-Kacheln für Kunden (KUNDE) -> Ahora apunta a tu nuevo paso 1 multinivel
   return [
     { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
-    { link: '/anfragen', text: 'Auskünfte', icon: 'envelope', badge: 1 },
+    { link: '/filter', text: 'Alle Anfragen', icon: 'search' },
+    { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
     einstellungenKachel,
     profilKachel
   ];
 });
 
-// --- HILFSFUNKTIONEN FÜR DIE ANZEIGE ---
-const getStatusKlasse = (status) => {
-  switch (status) {
-    case 'IN_ARBEIT': return 'status-arbeit';
-    case 'VOLLENDET': return 'status-vollendet';
-    case 'OFFEN': return 'status-offen';
-    case 'FREIGEGEBEN': return 'status-freigegeben';
-    default: return 'status-erstellt';
-  }
-};
-
-const getStatusLabel = (status) => {
-  switch (status) {
-    case 'IN_ARBEIT': return 'In Arbeit';
-    case 'VOLLENDET': return 'Vollendet';
-    case 'OFFEN': return 'Offen';
-    case 'FREIGEGEBEN': return 'Freigegeben';
-    default: return 'Erstellt';
-  }
-};
 
 const formatiereDatum = (datumString) => {
   if (!datumString) return 'Unbekannt';
@@ -159,9 +162,9 @@ const formatiereDatum = (datumString) => {
               <div class="fw-bold item-title">{{ anfrage.kategorie }} #{{ anfrage.id }}</div>
               <div class="text-muted item-date">Erstellt am {{ formatiereDatum(anfrage.erstellungsdatum) }}</div>
             </div>
-            <span class="badge status-badge" :class="getStatusKlasse(anfrage.status)">
-              {{ getStatusLabel(anfrage.status) }}
-            </span>
+            <router-link :to="`/anfrage/${anfrage.id}`" class="nav-link btn costum-pill-cta p-2">
+              {{ anfrage.status }}
+            </router-link>
           </div>
         </div>
 

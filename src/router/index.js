@@ -9,6 +9,9 @@ import Dashboard from '../views/Dashboard.vue';
 import CreateAnfrageSchritt1 from '../views/CreateAnfrageSchritt1.vue';
 import CreateAnfrageSchritt2 from '../views/CreateAnfrageSchritt2.vue';
 import CreateAnfrageSchritt3 from '../views/CreateAnfrageSchritt3.vue';
+import Kontoeinstellungen from '../views/Kontoeinstellungen.vue';
+import AngebotFilter from '../views/AngebotFilter.vue';
+import AngebotView from '../views/AngebotView.vue';
 
 
 const routes = [
@@ -55,6 +58,21 @@ const routes = [
     path: '/create-anfrage/schritt-3',
     name: 'CreateAnfrageSchritt3',
     component: CreateAnfrageSchritt3
+  },
+  {
+    path: '/kontoeinstellungen',
+    name: 'Kontoeinstellungen',
+    component: Kontoeinstellungen
+  }, 
+  {
+    path: '/angebot-filter',
+    name: 'AngebotFilter',
+    component: AngebotFilter
+  },
+  {
+    path: '/angebote',
+    name: 'Angebote',
+    component: AngebotView
   }
 ];
 

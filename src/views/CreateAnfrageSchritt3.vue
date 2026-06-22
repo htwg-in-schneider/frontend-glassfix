@@ -5,6 +5,11 @@ import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
 import Button from '@/components/Button.vue';
 import { createAnfrageStore } from '@/store/createAnfrageStore';
+import { useAuth0 } from '@auth0/auth0-vue';
+
+const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+const bearerToken = ref('');
+const error = ref('');
 
 const router = useRouter();
 const istAmSpeichern = ref(false);
@@ -26,7 +31,8 @@ function zurueckZuSchritt2() {
 
 async function speichereAnfrage() {
   istAmSpeichern.value = true;
-  
+  const token = await getAccessTokenSilently();
+  bearerToken.value = token;
   
   const anfragePayload = {
     kategorie: createAnfrageStore.kategorie,
@@ -48,6 +54,7 @@ async function speichereAnfrage() {
     const antwort = await fetch(url, {
       method: HTTPMethode,
       headers: {
+        'Authorization': `Bearer ${bearerToken.value}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(anfragePayload),

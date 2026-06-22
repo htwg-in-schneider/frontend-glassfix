@@ -1,12 +1,31 @@
 <script setup>
-import router from '@/router';
-import { computed } from 'vue';
+import { computed } from 'vue'; // Importante para la reactividad de los botones
 import Button from '@/components/Button.vue';
 import { useAuth0 } from '@auth0/auth0-vue'
-const { loginWithRedirect} = useAuth0()
+import { useRouter } from 'vue-router';
 
+const { loginWithRedirect, isAuthenticated } = useAuth0()
+const router = useRouter()
+
+const goToAuth0Login = () => {
+  loginWithRedirect({
+    appState: { target: '/dashboard' },
+    authorizationParams: {
+      audience: 'https://glassfix.api'
+    },
+    openUrl: (url) => {
+      window.open(url, '_self')
+    }
+  })
+}
+
+const goToDashboard = () => {
+  router.push('/dashboard')
+}
+
+const btnAction = computed(() => isAuthenticated.value ? goToDashboard : goToAuth0Login);
+const btntext = computed(() => isAuthenticated.value ? 'Dashboard' : 'Anmelden');
 </script>
-
 <template>
   <div class="container-xxl">
  
@@ -53,7 +72,12 @@ const { loginWithRedirect} = useAuth0()
                   <a class="nav-link" href="#Rezensionen">Rezensionen</a>
                 </li>
                 <li class="nav-item">
-                    <Button type="login" :text="'Anmelden'" :onClick="() => loginWithRedirect({ appState: { target: '/dashboard' } })" class="nav-link text-start text-md-center w-100 costum-pill-cta"/>
+                    <Button
+  type="login"
+  :text="btntext"
+  :onClick="btnAction"
+  class="nav-link text-start text-md-center w-100 costum-pill-cta"
+/>
                 </li>
               </ul>
             </div>
@@ -220,4 +244,3 @@ const { loginWithRedirect} = useAuth0()
  
   </div>
 </template>
-

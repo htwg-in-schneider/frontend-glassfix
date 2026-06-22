@@ -3,30 +3,31 @@ import { computed, ref, onMounted } from 'vue';
 
 import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
-import AnfrageCard from '@/components/AnfrageCard.vue';
+import AngebotCard from '@/components/AngebotCard.vue';
 
-import { useAnfragenFilterStore } from '@/anfragenFilter';
+import { useAngebotFilterStore } from '@/angebotFilter';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
 const error = ref('');
 
-const filterStore = useAnfragenFilterStore();
+const filterStore = useAngebotFilterStore();
 
 // --- API INTEGRATION VARIABLES (DEUTSCH) ---
-const backendAnfragen = ref([]);         // Speichert die vom Backend geladenen Anfragen
+const backendAngebote = ref([]);         // Speichert die vom Backend geladenen Angebote
 const istAmLaden = ref(true);            // Status-Indikator für den Ladevorgang
 const fehlerMeldung = ref('');           // Speichert eventuelle Fehlermeldungen
 
-// Funktion zum Abrufen der Anfragen vom Spring Boot Backend
-const ladeAnfragenVomBackend = async () => {
+// Funktion zum Abrufen der Angebote vom Spring Boot Backend
+const ladeAngeboteVomBackend = async () => {
   istAmLaden.value = true;
   fehlerMeldung.value = '';
   const token = await getAccessTokenSilently();
   bearerToken.value = token;
   try {
-    const antwort = await fetch('http://localhost:8081/api/anfrage', {
+    // 'credentials: "include"' ist zwingend erforderlich, damit die HttpSession-Cookie (JSESSIONID) übertragen wird
+    const antwort = await fetch('http://localhost:8081/api/auskunft', {
       method: 'GET',
       credentials: 'include', 
       headers: {
@@ -37,7 +38,7 @@ const ladeAnfragenVomBackend = async () => {
 
     if (antwort.ok) {
       const daten = await antwort.json();
-      backendAnfragen.value = daten;
+      backendAngebote.value = daten;
     } else if (antwort.status === 401) {
       fehlerMeldung.value = 'Nicht autorisiert. Bitte melden Sie sich zuerst an.';
     } else {
@@ -53,47 +54,52 @@ const ladeAnfragenVomBackend = async () => {
 
 // Automatischer Aufruf beim Laden der View
 onMounted(() => {
-  ladeAnfragenVomBackend();
+  ladeAngeboteVomBackend();
 });
 
 // Filter-Logik angepasst an die geladenen Backend-Daten
-const filteredAnfragen = computed(() => {
+const filteredAngebote = computed(() => {
   // Wir filtern nun das reaktive Array aus der API statt der statischen Datei
-  return backendAnfragen.value.filter((anfrage) => {
+  return backendAngebote.value.filter((angebot) => {
     const matchesCategory =
       !filterStore.category ||
-      anfrage.kategorie === filterStore.category;
+      angebot.kategorie === filterStore.category;
 
     const matchesStatus =
       !filterStore.status ||
-      anfrage.status === filterStore.status;
+      angebot.status === filterStore.status;
 
     // Hinweis: erstellungsdatum muss im passenden Format vom Backend kommen
     const matchesPeriod =
       !filterStore.period ||
-      anfrage.erstellungsdatum === filterStore.period;
+      angebot.erstellungsdatum === filterStore.period;
 
-    // Da kunde im Backend ein Objekt (Benutzer) ist, greifen wir auf anfrage.kunde.benutzername zu
+    // Da kunde im Backend ein Objekt (Benutzer) ist, greifen wir auf angebot.kunde.benutzername zu
     const matchesCustomer =
-      !filterStore.username ||
-      (anfrage.kunde && anfrage.kunde.name.toLowerCase().includes(filterStore.username.toLowerCase()));
+      !filterStore.kunde ||
+      (angebot.kunde && angebot.kunde.name.toLowerCase().includes(filterStore.kunde.toLowerCase()));
+    
+    const matchesExpert =
+      !filterStore.experte ||
+      (angebot.experte && angebot.experte.name.toLowerCase().includes(filterStore.experte.toLowerCase()));
 
     const matchesRequestId =
       !filterStore.requestId ||
-      String(anfrage.id).includes(filterStore.requestId);
+      String(angebot.id).includes(filterStore.requestId);
 
     return (
       matchesCategory &&
       matchesStatus &&
       matchesPeriod &&
       matchesCustomer &&
+      matchesExpert &&
       matchesRequestId
     );
   });
 });
 
-function getAnfragen() {
-  return filteredAnfragen.value;
+function getAngebote() {
+  return filteredAngebote.value;
 }
 </script>
 
@@ -102,7 +108,7 @@ function getAnfragen() {
     <Header text="Filter" />
 
     <div class="row m-0 text-center justify-content-center pt-4">
-      <LogoAndTitle :title="'Anfragen'" :subtitle="'Gefilterte Kundenanfragen'" />
+      <LogoAndTitle :title="'Angebote'" :subtitle="'Gefilterte Angebote'" />
     </div>
 
     <div v-if="istAmLaden" class="text-center py-5">
@@ -118,17 +124,17 @@ function getAnfragen() {
       </div>
     </div>
 
-    <div v-else-if="getAnfragen().length === 0" class="text-center py-5">
-      <h4 class="text-muted fw-bold">Keine Anfragen zu den gewählten Filtern gefunden.</h4>
+    <div v-else-if="getAngebote().length === 0" class="text-center py-5">
+      <h4 class="text-muted fw-bold">Keine Angebote zu den gewählten Filtern gefunden.</h4>
     </div>
 
     <div v-else class="row m-0 px-2 px-md-5 pb-5 g-3 g-md-4">
       <div
-        v-for="anfrage in getAnfragen()"
-        :key="anfrage.id"
+        v-for="angebot in getAngebote()"
+        :key="angebot.id"
         class="col-12 col-md-4 col-xl-3"
       >
-        <AnfrageCard :anfrage="anfrage" />
+        <AngebotCard :angebot="angebot" />
       </div>
     </div>
   </div>
