@@ -20,13 +20,11 @@ const istAmLaden = ref(true);
 const ladeDashboardDaten = async () => {
   istAmLaden.value = true;
   
-  try {
-    // 1. Intentar obtener el token silenciosamente
+  try { 
     const token = await getAccessTokenSilently();
     bearerToken.value = token;
 
-    // 2. Obtener los datos del endpoint /me
-    const benutzerAntwort = await fetch('http://localhost:8081/api/auth/me', {
+    const benutzerAntwort = await fetch('http://localhost:8081/api/profile', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -36,7 +34,7 @@ const ladeDashboardDaten = async () => {
 
     if (benutzerAntwort.ok) {
       const benutzerDaten = await benutzerAntwort.json();
-      benutzername.value = benutzerDaten.benutzername;
+      benutzername.value = benutzerDaten.name;
       benutzerRolle.value = benutzerDaten.rolle; 
     } else {
       console.warn('Das Backend hat den Token abgelehnt (401). Leite weiter auf /');
@@ -92,7 +90,7 @@ const sektionTitel = computed(() => {
 // Dynamisches Kachel-Menü basierend auf der Benutzerrolle
 const menueKacheln = computed(() => {
   const einstellungenKachel = { link: '/Kontoeinstellungen', text: 'Einstellungen', icon: 'gear' };
-  const profilKachel = { link: '/profil', text: 'Profil', icon: 'person' };
+  const profilKachel = { link: '/profilverwaltung', text: 'Profilverwaltung', icon: 'person' };
 
   if (benutzerRolle.value === 'FACHKRAFT') {
     return [

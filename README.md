@@ -115,7 +115,11 @@ Made static product page from mock work as a Vue project:
   - Settings in `.env.development` have to be adapted to your Auth0 application
 - Added `UserMenu` component to the Navbar:
   - Handles Login/Logout.
-  - Displays user avatar when authenticated.
-  - Optimized for mobile view (avatar visible outside hamburger menu).
-- Added `/profile` page to display user information from Auth0 and OAuth2 debug info
 - Updated Views to call Data from backend according to the role of the user
+  - see `DataLoader.java` in backend and adapt the oauthIds accordingly.
+
+### Iteration 12b: Authenticated call to backend (Profile)
+
+- calling `/api/backend` to retrieve backend user and role
+- Note that the corresponding user entities in the backend must exist to make this work
+- Added `/profile` page to display user information from Auth0 and OAuth2 debug info, and info in backend.

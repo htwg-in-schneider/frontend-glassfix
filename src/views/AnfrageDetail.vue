@@ -93,7 +93,7 @@ onMounted(async () => {
 
 const kundenName = computed(() => {
   return anfrage.value && anfrage.value.kunde
-    ? anfrage.value.kunde.benutzername
+    ? anfrage.value.kunde.name
     : 'Unbekannt';
 });
 function geheZuBearbeiten() {
@@ -181,6 +181,7 @@ function anfragePruefen(){
       },
       body: JSON.stringify({
         ...anfrage.value,
+        status: 'PRUEFUNG_ABGESCHLOSSEN',
         antwort: anfrageAntwort.value
       })
     })
@@ -234,7 +235,6 @@ function anfragePruefen(){
             <strong>Kategorie:</strong><br>
             {{ anfrage.kategorie }}
           </p>
-
           <p class="mb-4">
             <strong>Status:</strong><br>
             <span class="badge bg-secondary">{{ anfrage.status }}</span>
@@ -258,6 +258,11 @@ function anfragePruefen(){
             <strong class="mt-4 mb-3">Antwort der Experte:</strong>
             <p>{{ anfrage.antwort }}</p>
           </div>
+          <p v-if="anfrage.experte" class="mb-4">
+            <strong>Greprüft von:</strong><br>
+            {{ anfrage.experte.name }}
+          </p>
+
 
           <div v-if="anfrage.bildUrl" class="mb-4">
             <strong>Bilder</strong>

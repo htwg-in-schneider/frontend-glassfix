@@ -26,7 +26,7 @@ defineProps({
     <div class="card-body d-flex flex-row flex-md-column justify-content-between align-items-center align-items-md-stretch p-3 flex-grow-1 overflow-hidden">
       <div class="me-2 me-md-0 mb-md-3 style-text-block text-truncate">
         <h5 class="fw-bold mb-1 mb-md-3 text-dark text-truncate style-title">
-          {{ angebotanfrage.kategorie }} #{{ angebot.id }}
+          {{ angebot.anfrage.kategorie }} #{{ angebot.id }}
         </h5>
 
         <div class="d-flex flex-row flex-md-column flex-wrap gap-1 gap-md-2">

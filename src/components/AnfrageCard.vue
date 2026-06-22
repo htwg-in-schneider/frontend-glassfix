@@ -31,7 +31,7 @@ defineProps({
 
         <div class="d-flex flex-row flex-md-column flex-wrap gap-1 gap-md-2">
           <span class="badge border text-dark bg-white px-2 py-1 py-md-2 d-inline-flex align-items-center justify-content-start style-badge">
-            <span class="me-1 me-md-2 text-muted">👤</span> {{ anfrage.kunde.benutzername }}
+            <span class="me-1 me-md-2 text-muted">👤</span> {{ anfrage.kunde.name }}
           </span>
 
           <span class="badge border text-dark bg-white px-2 py-1 py-md-2 d-inline-flex align-items-center justify-content-start style-badge">

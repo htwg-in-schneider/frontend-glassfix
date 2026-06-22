@@ -32,7 +32,7 @@ const handleLogout = () => {
         <div class="px-4 mt-4">
       <div class="menu-list-container d-flex flex-column gap-3">
         
-        <router-link to="/Profilverwaltung" class="menu-list-item-link">
+        <router-link to="/profilverwaltung" class="menu-list-item-link">
           <div class="menu-list-item d-flex justify-content-between align-items-center p-3">
             <div class="d-flex align-items-center gap-3">
               <div class="icon-circle-box">

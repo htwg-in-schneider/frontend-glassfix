@@ -12,6 +12,7 @@ import CreateAnfrageSchritt3 from '../views/CreateAnfrageSchritt3.vue';
 import Kontoeinstellungen from '../views/Kontoeinstellungen.vue';
 import AngebotFilter from '../views/AngebotFilter.vue';
 import AngebotView from '../views/AngebotView.vue';
+import Profilverwaltung from '@/views/Profilverwaltung.vue';
 
 
 const routes = [
@@ -73,6 +74,11 @@ const routes = [
     path: '/angebote',
     name: 'Angebote',
     component: AngebotView
+  },
+  {
+    path: '/profilverwaltung',
+    name: 'Profilverwaltung',
+    component: Profilverwaltung
   }
 ];
 
