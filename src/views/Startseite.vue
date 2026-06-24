@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'; // Importante para la reactividad de los botones
+import { computed, reactive } from 'vue'; // GEÄNDERT: reactive ergänzt für Kontaktformular
 import Button from '@/components/Button.vue';
+import Footer from '@/components/Footer.vue'; // GEÄNDERT: Footer importiert
 import { useAuth0 } from '@auth0/auth0-vue'
 import { useRouter } from 'vue-router';
 
@@ -25,7 +26,21 @@ const goToDashboard = () => {
 
 const btnAction = computed(() => isAuthenticated.value ? goToDashboard : goToAuth0Login);
 const btntext = computed(() => isAuthenticated.value ? 'Dashboard' : 'Anmelden');
+
+// GEÄNDERT: Kontaktformular-State ergänzt
+const kontaktFormular = reactive({
+  nachricht: ''
+})
+
+// GEÄNDERT: Funktion zum Öffnen des E-Mail-Programms ergänzt
+function sendeKontaktanfrage() {
+  const betreff = encodeURIComponent('Kontaktanfrage über GlassFix')
+  const inhalt = encodeURIComponent(kontaktFormular.nachricht)
+
+  window.location.href = `mailto:kontakt@glassfix.de?subject=${betreff}&body=${inhalt}`
+}
 </script>
+
 <template>
   <div class="container-xxl">
  
@@ -71,13 +86,19 @@ const btntext = computed(() => isAuthenticated.value ? 'Dashboard' : 'Anmelden')
                 <li class="nav-item">
                   <a class="nav-link" href="#Rezensionen">Rezensionen</a>
                 </li>
+
+                <!-- GEÄNDERT: Kontakt-Link in der Navbar ergänzt -->
                 <li class="nav-item">
-                    <Button
-  type="login"
-  :text="btntext"
-  :onClick="btnAction"
-  class="nav-link text-start text-md-center w-100 costum-pill-cta"
-/>
+                  <a class="nav-link" href="#Kontakt">Kontakt</a>
+                </li>
+
+                <li class="nav-item">
+                  <Button
+                    type="login"
+                    :text="btntext"
+                    :onClick="btnAction"
+                    class="nav-link text-start text-md-center w-100 costum-pill-cta"
+                  />
                 </li>
               </ul>
             </div>
@@ -241,6 +262,44 @@ const btntext = computed(() => isAuthenticated.value ? 'Dashboard' : 'Anmelden')
         </div>
       </div>
     </div>
- 
+
+    <!-- GEÄNDERT: Kontaktbereich ergänzt -->
+    <div class="row bg-light" id="Kontakt">
+      <div class="col-12 p-3">
+        <h3 class="text-center">Kontakt</h3>
+        <p class="text-center text-muted mb-0">
+          Sonstige Fragen:
+        </p>
+      </div>
+    </div>
+
+    <!-- GEÄNDERT: Kontaktformular ergänzt -->
+    <div class="row bg-light pb-5 justify-content-center">
+      <div class="col-12 col-md-10 col-lg-7">
+        <form class="contact-form-card mx-auto" @submit.prevent="sendeKontaktanfrage">
+          <div class="row g-3">
+            <div class="col-12">
+              <label for="kontaktNachricht" class="form-label fw-bold">Nachricht</label>
+              <textarea
+                id="kontaktNachricht"
+                v-model="kontaktFormular.nachricht"
+                class="form-control"
+                rows="4"
+                required
+              ></textarea>
+            </div>
+
+            <div class="col-12 text-center">
+              <button type="submit" class="btn costum-pill-cta px-4 py-2 fw-bold">
+                Anfrage per E-Mail senden
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- GEÄNDERT: Footer mit Impressum/Datenschutz eingefügt -->
+    <Footer />
   </div>
 </template>

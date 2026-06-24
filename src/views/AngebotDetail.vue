@@ -8,8 +8,10 @@ import Button from '../components/Button.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 import { updateAngebotStore } from '@/store/updateAngebotStore.js'; 
+import { zeigeErgebnis } from '@/router/ergebnisNavigation'; 
 
 const angebotStore = updateAngebotStore;
+const loeschenBestaetigen = ref(false); 
 
 const baseUrl = 'http://localhost:8081';
 
@@ -103,30 +105,34 @@ const kundenName = computed(() => {
 
 
 function loescheAngebot() {
-  if (confirm('Sind Sie sicher, dass Sie diese Angebot löschen möchten?')) {
-    fetch(`http://localhost:8081/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': `Bearer ${bearerToken.value}`,
-        'Content-Type': 'application/json'
-      }
-    })
-    .then(antwort => {
-      if (antwort.ok) {
-        alert('Angebot erfolgreich gelöscht!');
-        router.push('/dashboard');
-      } else if (antwort.status === 401) {
-        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-        router.push('/login');
-      } else {
-        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
-      }
-    })
-    .catch(fehler => {
-      console.error('Netzwerkfehler:', fehler);
-      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
-    });
-  }
+  loeschenBestaetigen.value = true; 
+}
+
+function abbrechenLoeschen() {
+  loeschenBestaetigen.value = false; 
+}
+
+function loeschenBestaetigenUndAusfuehren() {
+  fetch(`http://localhost:8081/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
+    method: 'DELETE',
+    headers: {
+      'Authorization': `Bearer ${bearerToken.value}`,
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(antwort => {
+    if (antwort.ok) {
+      zeigeErgebnis(router, true, 'Angebot erfolgreich gelöscht!', '/dashboard'); 
+    } else if (antwort.status === 401) {
+      zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
+    } else {
+      zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + antwort.status, `/angebot/${route.params.id}`); 
+    }
+  })
+  .catch(fehler => {
+    console.error('Netzwerkfehler:', fehler);
+    zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
+  });
 }
 
 async function updateAngebot(){
@@ -151,18 +157,19 @@ async function updateAngebot(){
             })
 
             if(response.ok){
-                alert('Angebot erfolgreich aktualisiert!');
-                router.push('/dashboard')
+                zeigeErgebnis(router, true, 'Angebot erfolgreich aktualisiert!', '/dashboard'); 
+                return; 
             } else{
                 if (response.status === 401) {
-                    alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-                    router.push('/login');
+                    zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
                 } else {
-                    alert('Ein Fehler ist aufgetreten. Status Code: ' + response.status);
+                    zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, `/angebot/${route.params.id}`); 
                 }
+                return; 
             }
         } catch (e){
             console.warn('Could not get token:', e)
+            zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
         }
     }
 }
@@ -187,20 +194,21 @@ async function sendToAdmin(){
             })
 
             if(response.ok){
-                alert('Angebot erfolgreich an Admin gesendet!');
                 angebotStore.reset();
-                router.push('/dashboard')
+                zeigeErgebnis(router, true, 'Angebot erfolgreich an Admin gesendet!', '/dashboard'); 
+                return; 
             } else{
                 if (response.status === 401) {
-                    alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-                    router.push('/login');
+                    zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
                 } else {
-                    alert('Ein Fehler ist aufgetreten. Status Code: ' + response.status);
+                    zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, `/angebot/${route.params.id}`); 
                 }
+                return;
             }
         } catch (e){
             console.error('Netzwerkfehler beim Senden an Admin:', e);
             console.warn('Could not get token:', e)
+            zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
         }
     }
 }
@@ -396,6 +404,14 @@ const readyToUpdate = computed(() =>{
           </div>
           
         </div>
+
+        <div v-if="loeschenBestaetigen" class="delete-confirmation mx-auto mt-3 p-3 text-center">
+          <p class="fw-bold mb-3">Angebot wirklich löschen?</p>
+          <div class="d-flex justify-content-center gap-3">
+            <Button :text="'Abbrechen'" :type="'default'" :onClick="abbrechenLoeschen" />
+            <Button :text="'Endgültig löschen'" :type="'default'" :onClick="loeschenBestaetigenUndAusfuehren" />
+          </div>
+        </div> <!-- GEÄNDERT: eigene Bestätigungsbox wie in AnfrageDetail.vue ergänzt -->
       </section>
     </div>
   </div>

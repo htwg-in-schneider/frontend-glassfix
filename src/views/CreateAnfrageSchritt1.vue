@@ -4,22 +4,26 @@ import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
 import Button from '@/components/Button.vue';
 import { createAnfrageStore } from '@/store/createAnfrageStore';
+import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 
 const router = useRouter();
 
 function weiterZuSchritt2() {
   if (!createAnfrageStore.kategorie) {
-    alert('Bitte wählen Sie eine Kategorie aus.');
+    zeigeErgebnis(router, false, 'Bitte wählen Sie eine Kategorie aus.', '/create-anfrage/schritt-1'); 
     return;
   }
+
   if (!createAnfrageStore.beschreibung.trim()) {
-    alert('Bitte geben Sie eine Beschreibung des Schadens ein.');
+    zeigeErgebnis(router, false, 'Bitte geben Sie eine Beschreibung des Schadens ein.', '/create-anfrage/schritt-1'); 
     return;
   }
+
   if (!createAnfrageStore.fragen.trim()) {
-    alert('Bitte geben Sie Ihre Fragen oder Anmerkungen ein.');
+    zeigeErgebnis(router, false, 'Bitte geben Sie Ihre Fragen oder Anmerkungen ein.', '/create-anfrage/schritt-1');
     return;
   }
+
   router.push('/create-anfrage/schritt-2');
 }
 </script>

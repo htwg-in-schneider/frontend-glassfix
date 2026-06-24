@@ -5,7 +5,7 @@ import Button from '@/components/Button.vue';
 import { useAuth0 } from '@auth0/auth0-vue';
 import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
-
+import { zeigeErgebnis } from '@/router/ergebnisNavigation'; 
 import { updateProfileStore } from '@/store/profileStore'
 const router = useRouter();
 
@@ -45,24 +45,23 @@ async function updateProfileData(){
                 body: JSON.stringify(dataPayload)
             })
 
-            if(response.ok){
-                alert('Pofil erfolgreich aktualisiert!');
-                router.push('/dashboard')
-            } else{
-                if (response.status === 401) {
-                    alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-                    router.push('/login');
-                } else {
-                    alert('Ein Fehler ist aufgetreten. Status Code: ' + response.status);
-                }
-            }
-        } catch (e){
-            error.value = `Fehler beim Aktualisieren des Profils: ${e.message}`
-            console.warn('Could not get token:', e)
+            if (response.ok) {
+        zeigeErgebnis(router, true, 'Profil erfolgreich aktualisiert!', '/dashboard'); 
+        return; // GEÄNDERT: nach Weiterleitung abbrechen
+      } else {
+        if (response.status === 401) {
+          zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
+        } else {
+          zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, '/profilverwaltung'); 
         }
+
+        return; 
+      }
+    } catch (e) {
+      error.value = `Fehler beim Aktualisieren des Profils: ${e.message}`;
+      console.warn('Could not get token:', e);
     }
-    
-    
+  }
 }
 
 onMounted(async () => {

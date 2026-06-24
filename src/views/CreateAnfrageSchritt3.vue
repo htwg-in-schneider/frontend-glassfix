@@ -6,6 +6,7 @@ import LogoAndTitle from '@/components/LogoAndTitle.vue';
 import Button from '@/components/Button.vue';
 import { createAnfrageStore } from '@/store/createAnfrageStore';
 import { useAuth0 } from '@auth0/auth0-vue';
+import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -39,11 +40,10 @@ async function speichereAnfrage() {
     beschreibung: createAnfrageStore.beschreibung,
     fragen: createAnfrageStore.fragen,
     bildUrl: createAnfrageStore.bildUrl
-    
   };
 
-
   const istEditModus = createAnfrageStore.id !== null && createAnfrageStore.id !== undefined;
+
   const url = istEditModus 
     ? `http://localhost:8081/api/anfrage/${createAnfrageStore.id}` 
     : 'http://localhost:8081/api/anfrage';
@@ -62,24 +62,26 @@ async function speichereAnfrage() {
     });
 
     if (antwort.ok) {
-      if (istEditModus) {
-        alert('Anfrage erfolgreich aktualisiert!');
-      } else {
-        alert('Anfrage erfolgreich erstellt!');
-      }
-      createAnfrageStore.reset(); 
-      router.push('/dashboard');  
+      const erfolgsMeldung = istEditModus
+        ? 'Anfrage erfolgreich aktualisiert!'
+        : 'Anfrage erfolgreich erstellt!';
+
+      createAnfrageStore.reset();
+
+      zeigeErgebnis(router, true, erfolgsMeldung, '/dashboard');
+      return;
     } else {
       if (antwort.status === 401) {
-        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-        router.push('/login');
+        zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login');
       } else {
-        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+        zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + antwort.status, '/create-anfrage/schritt-3');
       }
+
+      return;
     }
   } catch (fehler) {
     console.error('Verbindungsfehler zum Backend:', fehler);
-    alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+    zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', '/create-anfrage/schritt-3');
   } finally {
     istAmSpeichern.value = false;
   }
