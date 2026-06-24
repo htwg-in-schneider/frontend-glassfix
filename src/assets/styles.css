@@ -290,5 +290,64 @@ h3.text-center {
     background-color: #d97c00;
     color: white;
 }
+/* Footer */
+
+.glassfix-footer {
+    margin-top: 0;
+}
+
+.glassfix-footer-brand {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #7e6348;
+}
+
+.glassfix-footer-nav {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.glassfix-footer-link,
+.glassfix-footer-link:visited,
+.glassfix-footer-link.router-link-active,
+.glassfix-footer-link.router-link-exact-active {
+    color: #a48e77;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.glassfix-footer-link:hover {
+    color: rgb(245, 148, 51);
+    text-decoration: none;
+}
+
+/* Kontaktformular */
+
+.contact-form-card {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 2rem;
+    max-width: 760px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+/* Ergebnis-View */
+
+.ergebnis-view {
+    margin: 0 auto;
+    border: 1px solid #dee2e6;
+}
+
+.delete-confirmation {
+    max-width: 520px;
+    border: 2px solid #000000;
+    border-radius: 15px;
+    background-color: #fff8ed;
+    box-shadow: #00000048 4px 4px 0px;
+}
 
 

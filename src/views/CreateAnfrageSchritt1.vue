@@ -47,7 +47,6 @@ function weiterZuSchritt2() {
             >
               <option value="" disabled selected>Bitte wählen...</option>
               <option value="Trinkglas">Trinkglas</option>
-              <option value="Spiegel">Spiegel</option>
               <option value="Fensterglas">Fensterglas</option>
               <option value="Vase">Vase</option>
             </select>

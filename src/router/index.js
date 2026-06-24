@@ -13,6 +13,10 @@ import Kontoeinstellungen from '../views/Kontoeinstellungen.vue';
 import AngebotFilter from '../views/AngebotFilter.vue';
 import AngebotView from '../views/AngebotView.vue';
 import Profilverwaltung from '@/views/Profilverwaltung.vue';
+import AngebotDetail from '@/views/AngebotDetail.vue';
+import Impressum from '@/views/Impressum.vue';
+import Datenschutz from '@/views/Datenschutz.vue';
+import ErgebnisView from '@/views/ErgebnisView.vue';
 
 
 const routes = [
@@ -79,7 +83,28 @@ const routes = [
     path: '/profilverwaltung',
     name: 'Profilverwaltung',
     component: Profilverwaltung
+  },
+  {
+    path: '/angebot/:id',
+    name: '/angebot-detail',
+    component: AngebotDetail
+  },
+  {
+    path: '/impressum',
+    name: 'Impressum',
+    component: Impressum
+  },
+  {
+    path: '/datenschutz',
+    name: 'Datenschutz',
+    component: Datenschutz
+  },
+  {
+    path: '/ergebnis',
+    name: 'Ergebnis',
+    component: ErgebnisView
   }
+
 ];
 
 const router = createRouter({

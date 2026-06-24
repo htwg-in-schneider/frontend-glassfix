@@ -46,7 +46,7 @@ defineProps({
 
       <div class="flex-shrink-0 style-btn-container">
         <router-link
-          :to="`/angebot/${angebot.id}`"
+          :to="`/angebot/${angebot.anfrage.id}`"
           class="text-decoration-none"
         >
           <Button

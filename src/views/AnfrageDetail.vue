@@ -8,6 +8,10 @@ import Button from '../components/Button.vue';
 import { createAnfrageStore } from '@/store/createAnfrageStore';
 import { useAuth0 } from '@auth0/auth0-vue';
 
+import { zeigeErgebnis } from '@/router/ergebnisNavigation';
+
+const loeschenBestaetigen = ref(false);
+
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
 const error = ref('');
@@ -29,7 +33,7 @@ const getBenutzerRolle = async () => {
   bearerToken.value = token;
 
     try{
-    const benutzerAntwort = await fetch('http://localhost:8081/api/auth/me', {
+    const benutzerAntwort = await fetch('http://localhost:8081/api/profile', {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -111,8 +115,15 @@ function geheZuBearbeiten() {
   }
 }
 
-function loescheAnfrage() {
-  if (confirm('Sind Sie sicher, dass Sie diese Anfrage löschen möchten?')) {
+function bestaetigen(){
+  loeschenBestaetigen.value = true;
+}
+
+function abbrechenLoeschen(){
+  loeschenBestaetigen.value = false;
+}
+
+function loeschenBestaetigenUndAusfuehren() {
     fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
       method: 'DELETE',
       headers: {
@@ -122,20 +133,17 @@ function loescheAnfrage() {
     })
     .then(antwort => {
       if (antwort.ok) {
-        alert('Anfrage erfolgreich gelöscht!');
-        router.push('/dashboard');
+        zeigeErgebnis(router, true, 'Anfrage erfolgreich gelöscht!', '/dashboard');
       } else if (antwort.status === 401) {
-        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-        router.push('/login');
+        zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/');
       } else {
-        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+        zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + antwort.status, `/anfrage/${anfrage.value.id}`);
       }
     })
     .catch(fehler => {
       console.error('Netzwerkfehler:', fehler);
-      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+      zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/anfrage/${anfrage.value.id}`);
     });
-  }
 }
 
 function anfragePruefen(){
@@ -152,25 +160,23 @@ function anfragePruefen(){
     })
   .then(antwort => {
     if (antwort.ok) {
-      alert('Anfrage erfolgreich geprüft!');
-      router.push(`/dashboard`);
+      zeigeErgebnis(router, true, 'Anfrage erfolgreich geprüft', '/dashboard');
     } else if (antwort.status === 401) {
-      alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-        router.push('/');
+      zeigeErgebnis(router, false, 'Sie müssen angemeldet sein', '/')
       } else {
-        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+        zeigeErgebnis(router, false, 'Fehler aufgetreten. Status Code:' + antwort.status, `/anfrage/${anfrage.value.id}`);
       }
     })
     .catch(fehler => {
       console.error('Netzwerkfehler:', fehler);
-      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+      zeigeErgebnis(router, false, 'Netzwerk Fehler', `/anfrage/${anfrage.value.id}`);
     });
   }
   
   const anfrageAntwort = ref('');
   function antwortAbgeben() {
     if (!anfrageAntwort.value) {
-      alert('Bitte geben Sie eine Antwort ein.');
+      zeigeErgebnis(router, false, 'Bitte geben Sie eine Antwort ein.', `/anfrage/${anfrage.value.id}`);
       return;
     }
     fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
@@ -187,18 +193,16 @@ function anfragePruefen(){
     })
     .then(antwort => {
       if (antwort.ok) {
-        alert('Antwort erfolgreich abgegeben!');
-        router.push('/dashboard');
+        zeigeErgebnis(router, true, 'Antwort erfolgreich abgegeben!', '/dashboard');
       } else if (antwort.status === 401) {
-        alert('Fehler: Sie müssen angemeldet sein, um fortzufahren.');
-        router.push('/login');
+        zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/');
       } else {
-        alert('Ein Fehler ist aufgetreten. Status Code: ' + antwort.status);
+        zeigeErgebnis(router, false, 'Fehler aufgetreten!', `/anfrage/${anfrage.value.id}`);
       }
     })
     .catch(fehler => {
       console.error('Netzwerkfehler:', fehler);
-      alert('Netzwerkfehler: Der Server konnte nicht erreicht werden.');
+      zeigeErgebnis(router, false, ' Netzwerk Fehler!', `/anfrage/${anfrage.value.id}`);
     });
   }
 
@@ -294,11 +298,18 @@ function anfragePruefen(){
           <Button :text="'Bearbeiten'" :type="'AnfrageCard'" :onClick="geheZuBearbeiten" />
         </div>
         <div v-if="benutzerRolle === 'KUNDE' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
-          <Button :text="'Löschen'" :type="'default'" :onClick="loescheAnfrage"/>
+          <Button :text="'Löschen'" :type="'default'" :onClick="bestaetigen"/>
         </div>
         <div v-if="benutzerRolle === 'FACHKRAFT' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Prüfen'" :type="'default'" :onClick="anfragePruefen"/>
         </div>
+        <div v-if="loeschenBestaetigen" class="delete-confirmation mx-auto mt-3 p-3 text-center">
+        <p class="fw-bold mb-3">Anfrage wirklich löschen?</p>
+        <div class="d-flex justify-content-center gap-3">
+          <Button :text="'Abbrechen'" :type="'default'" :onClick="abbrechenLoeschen" />
+          <Button :text="'Endgültig löschen'" :type="'default'" :onClick="loeschenBestaetigenUndAusfuehren" />
+        </div>
+      </div>
       </section>
     </div>
   </div>

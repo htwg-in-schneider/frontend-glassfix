@@ -26,6 +26,12 @@ function handleHeaderClick() {
   if (props.text === 'Startseite') {
     router.push('/');
   }
+  if (props.text === 'Angebote') {
+    router.push('/angebote')
+  }
+  if (props.text === 'Angebot Filter'){
+    router.push('/angebot-filter')
+  }
 }
 </script>
 
