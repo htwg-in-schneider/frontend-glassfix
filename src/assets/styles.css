@@ -3,7 +3,7 @@ body {
 }
 
 #CTA {
-    background-image: url("ProjektBilder/CTA_bg.jpeg");
+    background-image: url("../ProjektBilder/CTA_bg.jpeg");
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
