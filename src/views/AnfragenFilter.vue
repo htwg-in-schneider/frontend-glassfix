@@ -71,9 +71,9 @@ onMounted(ladeKategorien)
               @change="filterStore.setStatus($event.target.value)"
             >
               <option value="">Alle Status</option>
-              <option value="Offen">Offen</option>
-              <option value="In Bearbeitung">In Bearbeitung</option>
-              <option value="Abgeschlossen">Abgeschlossen</option>
+              <option value="ERSTELLT">ERSTELLT</option>
+              <option value="IN_PRUEFUNG">IN_PRUEFUNG</option>
+              <option value="PRUEFUNG_ABGESCHOSSEN">PRUEFUNG_ABGESCHOSSEN</option>
             </select>
           </div>
 
