@@ -94,6 +94,7 @@ const ladeAngebotDetailVomBackend = async () => {
 };
 
 onMounted(async () => {
+  angebotStore.preis = '';
   await getBenutzerRolle();
   await ladeAngebotDetailVomBackend();
 });
@@ -139,7 +140,7 @@ function loeschenBestaetigenUndAusfuehren() {
 async function updateAngebot(){
   if(isAuthenticated.value){
         try{
-            const dataPayload = null;
+            let dataPayload = {};
 
               if(benutzerRolle === 'GESCHAEFTSFUEHRER' ){
                 dataPayload ={
@@ -156,7 +157,7 @@ async function updateAngebot(){
               }
               if( benutzerRolle === 'ADMIN'){
                 dataPayload = {
-                  reparaturEmpfehlung: angebotStore.reparaturEmpfehlung,
+                reparaturEmpfehlung: angebotStore.reparaturEmpfehlung,
                 zeitEinschaetzung: angebotStore.zeitEinschaetzung,
                 arbeitsschritte: angebotStore.arbeitsschritte,
                 preis: angebotStore.preis,
@@ -248,7 +249,7 @@ const readyToUpdate = computed(() =>{
   const hasReparaturEmpfehlung = angebotStore.reparaturEmpfehlung?.trim() !== '';
   const hasArbeitsschritte = angebotStore.arbeitsschritte.length > 0;
 
-  return (hasReparaturEmpfehlung || hasZeiteinschaetzung || hasArbeitsschritte) && !angebot.vlaue?.istFreigegeben;
+  return (hasReparaturEmpfehlung || hasZeiteinschaetzung || hasArbeitsschritte) && !angebot.value?.istFreigegeben;
 })
 
 async function angebotFreigeben(){
@@ -490,7 +491,7 @@ async function angebotAnnehmen(){
           </p>
 
           <div v-if="!angebot.istFreigegeben" class="d-flex justify-content-between align-items-center mb-4">
-              <div v-if="readyToSendKunde && benutzerRolle === 'GESCHAEFTSFUEHRER'" class="d-flex justify-content-center ">
+              <div v-if="readyToSendKunde && (benutzerRolle === 'GESCHAEFTSFUEHRER' || benutzerRolle === 'ADMIN')" class="d-flex justify-content-center ">
                 <Button :text="'Freigeben'" :type="'default'" :onClick="angebotFreigeben" />
               </div>
           </div>

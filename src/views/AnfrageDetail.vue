@@ -287,7 +287,7 @@ function anfragePruefen(){
 
         
 
-        <div v-if="(benutzerRolle === 'FACHKRAFT') && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN'" class="mb-3">
+        <div v-if="(benutzerRolle === 'FACHKRAFT') && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN' && anfrage.status === 'IN_PRUEFUNG'" class="mb-3">
             <label class="form-label fw-bold">Antwort *</label>
             <textarea 
               class="form-control custom-input" 
@@ -296,7 +296,7 @@ function anfragePruefen(){
               v-model="anfrageAntwort"
             ></textarea>
           </div>
-          <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN'" class="d-flex justify-content-center mt-3">
+          <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN' && anfrage.status === 'IN_PRUEFUNG'" class="d-flex justify-content-center mt-3">
             <Button :text="'Antwort Abgeben'" :type="'AnfrageCard'" :onClick="antwortAbgeben" />
           </div>
 
