@@ -7,6 +7,7 @@ import { useRouter } from 'vue-router';
 
 const { loginWithRedirect, isAuthenticated } = useAuth0()
 const router = useRouter()
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const goToAuth0Login = () => {
   loginWithRedirect({
@@ -47,7 +48,7 @@ function sendeKontaktanfrage() {
     <div class="row" id="Header">
       <div class="col-6 col-md-4 d-flex justify-content-center justify-content-md-start align-items-center">
         <img
-          src="/ProjektBilder/GlassFix_Logo.png"
+          :src="`${baseUrl}/ProjektBilder/GlassFix_Logo.png`"
           alt="GlassFix Logo"
           class="img-fluid p-3"
           style="width: 100%; max-width: 500px; height: auto;"
@@ -126,21 +127,21 @@ function sendeKontaktanfrage() {
     <div class="row pb-5 bg-light g-4">
       <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
         <div class="d-flex flex-column bg-light rounded border align-items-center p-2 service-card">
-          <img src="/ProjektBilder/Leistung1.png" alt="Säge" class="img-fluid m-2 card-img-fix service-img">
+          <img :src="`${baseUrl}/ProjektBilder/Leistung1.png`" alt="Säge" class="img-fluid m-2 card-img-fix service-img">
           <span class="mb-2 text-center text-muted">Säge <br>Zusägen der Glasobjekte</span>
         </div>
       </div>
  
       <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
         <div class="d-flex flex-column bg-light rounded border align-items-center p-2 service-card">
-          <img src="/ProjektBilder/Leistung2.png" alt="Schleifen" class="img-fluid m-2 card-img-fix service-img">
+          <img :src="`${baseUrl}/ProjektBilder/Leistung2.png`" alt="Schleifen" class="img-fluid m-2 card-img-fix service-img">
           <span class="mb-2 text-center text-muted">Schleifen <br>Randbearbeitung; Ausbrüche entfernen</span>
         </div>
       </div>
  
       <div class="col-12 col-md-6 col-lg-4 d-flex justify-content-center">
         <div class="d-flex flex-column bg-light rounded border align-items-center p-2 service-card">
-          <img src="/ProjektBilder/Leistung3.png" alt="Polieren" class="img-fluid m-2 card-img-fix service-img">
+          <img :src="`${baseUrl}/ProjektBilder/Leistung3.png`" alt="Polieren" class="img-fluid m-2 card-img-fix service-img">
           <span class="mb-2 text-center text-muted">
             Polieren <br> Kratzer, matte Stellen wieder <br>glänzend machen
           </span>
@@ -160,7 +161,7 @@ function sendeKontaktanfrage() {
  
       <div class="col-6 col-lg-2 d-flex justify-content-center align-items-center m-lg-2 mb-3 mb-lg-0">
         <img
-          src="/ProjektBilder/BeforAfterLinks.png"
+          :src="`${baseUrl}/ProjektBilder/BeforAfterLinks.png`"
           alt="Vorher Nachher links"
           class="img-fluid side-img side-img-left"
         >
@@ -169,7 +170,7 @@ function sendeKontaktanfrage() {
       <div class="col-lg-4 m-2 mx-5 order-last order-lg-0 d-flex flex-column justify-content-center align-items-center">
         <div class="row align-items-center mb-4 w-100 justify-content-center">
           <div class="col-auto">
-            <img src="/ProjektBilder/Warum1.png" alt="Erfahrene Fachkräfte" class="rounded icon-size">
+            <img :src="`${baseUrl}/ProjektBilder/Warum1.png`" alt="Erfahrene Fachkräfte" class="rounded icon-size">
           </div>
           <div class="col">
             <p class="m-0 fw-bold">Erfahrene Fachkräfte</p>
@@ -179,7 +180,7 @@ function sendeKontaktanfrage() {
  
         <div class="row align-items-center mb-4 w-100 justify-content-center">
           <div class="col-auto">
-            <img src="/ProjektBilder/Warum2.png" alt="Schnelle Einschätzung" class="rounded icon-size">
+            <img :src="`${baseUrl}/ProjektBilder/Warum2.png`" alt="Schnelle Einschätzung" class="rounded icon-size">
           </div>
           <div class="col">
             <p class="m-0 fw-bold">Schnelle & transparente Einschätzung</p>
@@ -189,7 +190,7 @@ function sendeKontaktanfrage() {
  
         <div class="row align-items-center mb-4 w-100 justify-content-center">
           <div class="col-auto">
-            <img src="/ProjektBilder/Warum3.png" alt="Individuelle Lösungen" class="rounded icon-size">
+            <img :src="`${baseUrl}/ProjektBilder/Warum3.png`" alt="Individuelle Lösungen" class="rounded icon-size">
           </div>
           <div class="col">
             <p class="m-0 fw-bold">Individuelle Lösungen</p>
@@ -200,7 +201,7 @@ function sendeKontaktanfrage() {
  
       <div class="col-6 col-lg-2 d-flex justify-content-center align-items-center m-lg-2 mb-3 mb-lg-0">
         <img
-          src="/ProjektBilder/BeforeAfterRechts.png"
+          :src="`${baseUrl}/ProjektBilder/BeforeAfterRechts.png`"
           alt="Vorher Nachher rechts"
           class="img-fluid side-img side-img-right"
         >
@@ -216,17 +217,17 @@ function sendeKontaktanfrage() {
  
     <div class="row bg-light pb-5 justify-content-center g-4">
       <div class="col-12 col-md-4 d-flex flex-column align-items-center">
-        <img src="/ProjektBilder/AblaufBild1.png" alt="Registrieren" class="img-fluid m-1 ablauf-img">
+        <img :src="`${baseUrl}/ProjektBilder/AblaufBild1.png`" alt="Registrieren" class="img-fluid m-1 ablauf-img">
         <h6 class="text-muted text-center">Anmelden/Registrieren</h6>
       </div>
  
       <div class="col-12 col-md-4 d-flex flex-column align-items-center m-2">
-        <img src="/ProjektBilder/ablaufBild2.png" alt="Hochladen" class="img-fluid m-1 ablauf-img">
+        <img :src="`${baseUrl}/ProjektBilder/ablaufBild2.png`" alt="Hochladen" class="img-fluid m-1 ablauf-img">
         <h6 class="text-muted text-center">Bild/Text hochladen</h6>
       </div>
  
       <div class="col-12 col-md-4 d-flex flex-column align-items-center m-2">
-        <img src="/ProjektBilder/ablaufBild3.png" alt="Angebot erhalten" class="img-fluid m-1 ablauf-img">
+        <img :src="`${baseUrl}/ProjektBilder/ablaufBild3.png`" alt="Angebot erhalten" class="img-fluid m-1 ablauf-img">
         <h6 class="text-muted text-center">Rückmeldung/Angebot erhalten</h6>
       </div>
     </div>
@@ -240,7 +241,7 @@ function sendeKontaktanfrage() {
     <div class="row pb-5 bg-light g-4 justify-content-center">
       <div class="col-12 col-md-6 d-flex justify-content-center">
         <div class="card h-100 review-card">
-          <img src="/ProjektBilder/Persona1.png" class="card-img-top review-img" alt="">
+          <img :src="`${baseUrl}/ProjektBilder/Persona1.png`" class="card-img-top review-img" alt="">
           <div class="card-body">
             <h5 class="card-title">Maike Maier</h5>
             <p class="card-text text-muted">
@@ -252,7 +253,7 @@ function sendeKontaktanfrage() {
  
       <div class="col-12 col-md-6 d-flex justify-content-center">
         <div class="card h-100 review-card">
-          <img src="/ProjektBilder/Persona2.png" class="card-img-top review-img" alt="">
+          <img :src="`${baseUrl}/ProjektBilder/Persona2.png`" class="card-img-top review-img" alt="">
           <div class="card-body">
             <h5 class="card-title">Max Mustermann</h5>
             <p class="card-text text-muted">

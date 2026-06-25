@@ -7,6 +7,7 @@ import { createAnfrageStore } from '@/store/createAnfrageStore';
 import { computed } from 'vue';
 
 const router = useRouter();
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 function zurueckZuSchritt1() {
   router.push('/create-anfrage/schritt-1');
@@ -42,7 +43,7 @@ const readyForNextStep = computed(() => {
             <div class="image-card p-2 d-flex align-items-center gap-3">
               <input class="form-check-input flex-shrink-0" type="radio" value="/AuftragBspBilder/Fensterglas.png" id="fenster" v-model="createAnfrageStore.bildUrl">
               <label class="form-check-label w-100 h-100 d-flex justify-content-center align-items-center" for="fenster">
-                <img src="/AuftragBspBilder/Fensterglas.png" alt="Fensterglas" class="img-fluid rounded image-contain">
+                <img :src="`${baseUrl}/AuftragBspBilder/Fensterglas.png`" alt="Fensterglas" class="img-fluid rounded image-contain">
               </label>
             </div>
           </div>
@@ -51,7 +52,7 @@ const readyForNextStep = computed(() => {
             <div class="image-card p-2 d-flex align-items-center gap-3">
               <input class="form-check-input flex-shrink-0" type="radio" value="/AuftragBspBilder/TrinkglasKratzer.png" id="TGK" v-model="createAnfrageStore.bildUrl">
               <label class="form-check-label w-100 h-100 d-flex justify-content-center align-items-center" for="TGK">
-                <img src="/AuftragBspBilder/TrinkglasKratzer.png" alt="Trinkglas Kratzer" class="img-fluid rounded image-contain">
+                <img :src="`${baseUrl}/AuftragBspBilder/TrinkglasKratzer.png`" alt="Trinkglas Kratzer" class="img-fluid rounded image-contain">
               </label>
             </div>
           </div>
@@ -60,7 +61,7 @@ const readyForNextStep = computed(() => {
             <div class="image-card p-2 d-flex align-items-center gap-3">
               <input class="form-check-input flex-shrink-0" type="radio" value="/AuftragBspBilder/TrinkglasRand.png" id="TGR" v-model="createAnfrageStore.bildUrl">
               <label class="form-check-label w-100 h-100 d-flex justify-content-center align-items-center" for="TGR">
-                <img src="/AuftragBspBilder/TrinkglasRand.png" alt="Trinkglas Rand" class="img-fluid rounded image-contain">
+                <img :src="`${baseUrl}/AuftragBspBilder/TrinkglasRand.png`" alt="Trinkglas Rand" class="img-fluid rounded image-contain">
               </label>
             </div>
           </div>
@@ -69,7 +70,7 @@ const readyForNextStep = computed(() => {
             <div class="image-card p-2 d-flex align-items-center gap-3">
               <input class="form-check-input flex-shrink-0" type="radio" value="/AuftragBspBilder/VaseKratzer.png" id="VK" v-model="createAnfrageStore.bildUrl">
               <label class="form-check-label w-100 h-100 d-flex justify-content-center align-items-center" for="VK">
-                <img src="/AuftragBspBilder/VaseKratzer.png" alt="Vase Kratzer" class="img-fluid rounded image-contain">
+                <img :src="`${baseUrl}/AuftragBspBilder/VaseKratzer.png`" alt="Vase Kratzer" class="img-fluid rounded image-contain">
               </label>
             </div>
           </div>
@@ -78,7 +79,7 @@ const readyForNextStep = computed(() => {
             <div class="image-card p-2 d-flex align-items-center gap-3">
               <input class="form-check-input flex-shrink-0" type="radio" value="/AuftragBspBilder/VaseRand.png" id="VR" v-model="createAnfrageStore.bildUrl">
               <label class="form-check-label w-100 h-100 d-flex justify-content-center align-items-center" for="VR">
-                <img src="/AuftragBspBilder/VaseRand.png" alt="Vase Rand" class="img-fluid rounded image-contain">
+                <img :src="`${baseUrl}/AuftragBspBilder/VaseRand.png`" alt="Vase Rand" class="img-fluid rounded image-contain">
               </label>
             </div>
           </div>

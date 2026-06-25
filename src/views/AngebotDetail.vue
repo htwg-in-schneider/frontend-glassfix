@@ -509,7 +509,7 @@ async function angebotAnnehmen(){
               <div class="col-12 p-0">
                 <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
                   <img 
-                    :src="`${baseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
+                    :src="`${baseUrl}/${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
                     alt="Glas Objekt" 
                     class="img-fluid detail-image-contain"
                   >

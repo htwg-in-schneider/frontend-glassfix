@@ -17,7 +17,7 @@ defineProps({
   >
     <div class="position-relative flex-shrink-0 style-img-container">
       <img
-       :src="`${viteBaseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`"
+       :src="`${viteBaseUrl}/${angebot.anfrage.bildUrl.replace(/^\//, '')}`"
         alt="Glas Objekt"
         class="w-100 h-100 object-fit-cover"
         @error="(e) => e.target.src = 'https://via.placeholder.com/300x200'"

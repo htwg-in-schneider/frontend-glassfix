@@ -1,7 +1,7 @@
 <template>
     <div class="col-8 col-sm-4 col-md-3 mb-2">
     <img 
-        src="/ProjektBilder/GlassFix_Logo.png" 
+        :src="`${baseUrl}/ProjektBilder/GlassFix_Logo.png`" 
         alt="GlassFix Logo" 
         class="img-fluid"
         style="max-height: 600px;"
@@ -14,6 +14,7 @@
     
 </template>
 <script setup>
+    const baseUrl = import.meta.env.VITE_API_BASE_URL;
     defineProps({
         title: {
             type: String,
