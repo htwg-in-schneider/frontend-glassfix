@@ -11,6 +11,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
 const error = ref('');
+const viteBaseUrl = import.meta.env.BASE_URL;
 
 const filterStore = useAnfragenFilterStore();
 

@@ -38,10 +38,10 @@ function weiter() {
       />
     </div>
 
-    <div class="row m-0 justify-content-center mt-3 pb-5">
+    <div class="row m-0 d-flex justify-content-center mt-3 pb-5">
       <div class="col-11 col-sm-8 col-md-5 col-lg-4">
-        <div class="ergebnis-card p-4 text-center">
-          <Button
+        <div class=" d-flex justify-content-center ergebnis-card p-4 text-center">
+          <Button 
             :text="'Weiter'"
             :type="'default'"
             :onClick="weiter"

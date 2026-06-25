@@ -14,6 +14,7 @@ const angebotStore = updateAngebotStore;
 const loeschenBestaetigen = ref(false); 
 
 const baseUrl = 'http://localhost:8081';
+const viteBaseUrl = import.meta.env.BASE_URL;
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -138,14 +139,30 @@ function loeschenBestaetigenUndAusfuehren() {
 async function updateAngebot(){
   if(isAuthenticated.value){
         try{
-            const dataPayload = benutzerRolle === 'GESCHAEFTSFUEHRER' ? {
+            const dataPayload = null;
+
+              if(benutzerRolle === 'GESCHAEFTSFUEHRER' ){
+                dataPayload ={
                 preis: angebotStore.preis,
                 istFreigegeben: true
-            } : {
-              reparaturEmpfehlung: angebotStore.reparaturEmpfehlung,
+                };
+              }
+              if(benutzerRolle === 'FACHKRAFT'){
+                dataPayload = {
+                  reparaturEmpfehlung: angebotStore.reparaturEmpfehlung,
                 zeitEinschaetzung: angebotStore.zeitEinschaetzung,
                 arbeitsschritte: angebotStore.arbeitsschritte
-              };
+                };
+              }
+              if( benutzerRolle === 'ADMIN'){
+                dataPayload = {
+                  reparaturEmpfehlung: angebotStore.reparaturEmpfehlung,
+                zeitEinschaetzung: angebotStore.zeitEinschaetzung,
+                arbeitsschritte: angebotStore.arbeitsschritte,
+                preis: angebotStore.preis,
+                istFreigegeben: true
+                };
+              }
 
             const response = await fetch(`${baseUrl}/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
                 method: 'PUT',
@@ -234,6 +251,101 @@ const readyToUpdate = computed(() =>{
   return (hasReparaturEmpfehlung || hasZeiteinschaetzung || hasArbeitsschritte) && !angebot.vlaue?.istFreigegeben;
 })
 
+async function angebotFreigeben(){
+  try{
+    const dataPayload = {
+      preis: angebotStore.preis,
+      istFreigegeben: true,
+      status: 'ANGEBOT_VORHANDEN'
+    }
+    const response = await fetch(
+      `${baseUrl}/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${bearerToken.value}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataPayload)
+    })
+    if(response.ok){
+      zeigeErgebnis(router, true, 'Angebot erfolgreich freigegeben.', '/dashboard');
+    } else{
+        if (response.status === 401) {
+          zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
+        } else {
+            zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, `/angebot/${route.params.id}`); 
+        }
+        return;
+    } 
+  } catch (e){
+    console.error('Netzwerkfehler beim Senden an Admin:', e);
+    console.warn('Could not get token:', e)
+    zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
+  }
+}
+
+async function angebotAnnehmen(){
+  try{
+    const dataPayload = {
+      status: 'ANGENOMMEN'
+    }
+    const response = await fetch(
+      `${baseUrl}/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${bearerToken.value}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataPayload)
+    })
+    if(response.ok){
+      zeigeErgebnis(router, true, 'Angebot erfolgreich angenommen.', '/dashboard');
+    } else{
+        if (response.status === 401) {
+          zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
+        } else {
+            zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, `/angebot/${route.params.id}`); 
+        }
+        return;
+    } 
+  } catch (e){
+    console.error('Netzwerkfehler beim Senden an Admin:', e);
+    console.warn('Could not get token:', e)
+    zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
+  }
+}
+
+  async function angebotAblehnen(){
+  try{
+    const dataPayload = {
+      status: 'ABGELEHNT'
+    }
+    const response = await fetch(
+      `${baseUrl}/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${bearerToken.value}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(dataPayload)
+    })
+    if(response.ok){
+      zeigeErgebnis(router, true, 'Angebot erfolgreich angenommen.', '/dashboard');
+    } else{
+        if (response.status === 401) {
+          zeigeErgebnis(router, false, 'Fehler: Sie müssen angemeldet sein, um fortzufahren.', '/login'); 
+        } else {
+            zeigeErgebnis(router, false, 'Ein Fehler ist aufgetreten. Status Code: ' + response.status, `/angebot/${route.params.id}`); 
+        }
+        return;
+    } 
+  } catch (e){
+    console.error('Netzwerkfehler beim Senden an Admin:', e);
+    console.warn('Could not get token:', e)
+    zeigeErgebnis(router, false, 'Netzwerkfehler: Der Server konnte nicht erreicht werden.', `/angebot/${route.params.id}`); 
+  }
+}
+
 
 
 
@@ -280,7 +392,7 @@ const readyToUpdate = computed(() =>{
             {{ angebot.erstellungsdatum.substring(0, 10) || 'Nicht angegeben' }}
           </p>
 
-          <div v-if="!angebot.vonExperteBearbeitet && benutzerRolle === 'FACHKRAFT'" class="mb-3">
+          <div v-if="!angebot.vonExperteBearbeitet && (benutzerRolle === 'FACHKRAFT' || benutzerRolle === 'ADMIN')" class="mb-3">
             <label class="form-label fw-bold">Reparaturempfehlung: *</label>
             <textarea 
               class="form-control custom-input" 
@@ -295,7 +407,7 @@ const readyToUpdate = computed(() =>{
             {{ angebot.reparaturEmpfehlung }}
           </p>
 
-          <div v-if="!angebot.vonExperteBearbeitet && benutzerRolle === 'FACHKRAFT'" class="mb-3">
+          <div v-if="!angebot.vonExperteBearbeitet && (benutzerRolle === 'FACHKRAFT' || benutzerRolle === 'ADMIN')" class="mb-3">
             <label class="form-label fw-bold">Zeiterfassung: *</label>
             <textarea 
               class="form-control custom-input" 
@@ -309,10 +421,10 @@ const readyToUpdate = computed(() =>{
 
           <p v-else-if="angebot.vonExperteBearbeitet" class="mb-4">
             <strong>Zeiterfassung:</strong><br>
-            {{ angebot.zeitEinschaetzung }}
+            {{ angebot.zeitEinschaetzung }} Stunden
           </p>
 
-          <div v-if="!angebot.vonExperteBearbeitet && benutzerRolle == 'FACHKRAFT'" class="mb-3">
+          <div v-if="!angebot.vonExperteBearbeitet && (benutzerRolle === 'FACHKRAFT' || benutzerRolle === 'ADMIN')" class="mb-3">
             <label class="form-label fw-bold">Arbeitsschritte wählen: *</label>
             
             <div class="p-3 border rounded bg-light custom-checkbox-list" style="max-height: 200px; overflow-y: auto;">
@@ -351,7 +463,7 @@ const readyToUpdate = computed(() =>{
           </p>
 
           
-          <div v-if="benutzerRolle === 'FACHKRAFT'" class="d-flex justify-content-between align-items-center mb-4">
+          <div v-if="benutzerRolle === 'FACHKRAFT'  || benutzerRolle === 'ADMIN'" class="d-flex justify-content-between align-items-center mb-4">
               <div v-if="readyToUpdate" class="d-flex justify-content-center ">
                 <Button :text="'Speichern'" :type="'default'" :onClick="updateAngebot" />
               </div>
@@ -360,7 +472,7 @@ const readyToUpdate = computed(() =>{
               </div>
           </div>
           
-          <div v-if="!angebot.istFreigegeben && angebot.vonExperteBearbeitet && benutzerRolle === 'GESCHAEFTSFUEHRER'" class="mb-3">
+          <div v-if="!angebot.istFreigegeben && angebot.vonExperteBearbeitet && (benutzerRolle === 'GESCHAEFTSFUEHRER' || benutzerRolle === 'ADMIN')" class="mb-3">
             <label class="form-label fw-bold">Preis: *</label>
             <textarea 
               class="form-control custom-input" 
@@ -372,17 +484,14 @@ const readyToUpdate = computed(() =>{
 
           
 
-          <p v-else-if="angebot.istFreigegeben" class="mb-4">
+          <p v-else-if="angebot.istFreigegeben || angebot.preis" class="mb-4">
             <strong>Preis:</strong><br>
-            {{ angebot.preis }}
+            {{ angebot.preis }} EUR
           </p>
 
-          <div class="d-flex justify-content-between align-items-center mb-4">
-              <div v-if="readyToSendKunde && benutzerRolle === 'GESHAEFTSFUEHRER'" class="d-flex justify-content-center ">
+          <div v-if="!angebot.istFreigegeben" class="d-flex justify-content-between align-items-center mb-4">
+              <div v-if="readyToSendKunde && benutzerRolle === 'GESCHAEFTSFUEHRER'" class="d-flex justify-content-center ">
                 <Button :text="'Freigeben'" :type="'default'" :onClick="angebotFreigeben" />
-              </div>
-              <div v-if="!angebot.istFreigegeben && benutzerRolle === 'GESHAEFTSFUEHRER'" class="d-flex justify-content-center">
-                <Button :text="'Senden'" :type="'default'" :onClick="sendToAdmin" />
               </div>
           </div>
 
@@ -395,10 +504,16 @@ const readyToUpdate = computed(() =>{
           
 
           <div v-if="angebot.anfrage.bildUrl" class="mb-4">
-            <strong>Bilder</strong>
-            <div class="row mt-2 g-3">
-              <div class="col-6">
-                <img :src="angebot.anfrage.bildUrl" alt="Glas Objekt" class="img-fluid detail-image">
+            <strong class="d-block mb-2">Bilder</strong>
+            <div class="row m-0">
+              <div class="col-12 p-0">
+                <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
+                  <img 
+                    :src="`${viteBaseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
+                    alt="Glas Objekt" 
+                    class="img-fluid detail-image-contain"
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -411,7 +526,17 @@ const readyToUpdate = computed(() =>{
             <Button :text="'Abbrechen'" :type="'default'" :onClick="abbrechenLoeschen" />
             <Button :text="'Endgültig löschen'" :type="'default'" :onClick="loeschenBestaetigenUndAusfuehren" />
           </div>
-        </div> <!-- GEÄNDERT: eigene Bestätigungsbox wie in AnfrageDetail.vue ergänzt -->
+        </div> 
+        
+        <div v-if="(benutzerRolle === 'KUNDE' || benutzerRolle === 'ADMIN') && angebot.istFreigegeben && angebot.status === 'ANGEBOT_VORHANDEN'" class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex justify-content-center ">
+          <Button :text="'Ablehnen'" :type="'default'" :onClick="angebotAblehnen" />
+        </div>
+        <div class="d-flex justify-content-center">
+          <Button :text="'Annehmen'" :type="'default'" :onClick="angebotAnnehmen" />
+        </div>
+       </div>
+
       </section>
     </div>
   </div>
@@ -439,6 +564,30 @@ const readyToUpdate = computed(() =>{
 @media (min-width: 768px) {
   .detail-image {
     height: 220px;
+  }
+}
+/* Contenedor tipo marco para la imagen de detalles */
+.detail-image-wrapper {
+  width: 100%;
+  height: 220px; /* Altura fija en móviles */
+  border: 2px solid #000000;
+  border-radius: 12px;
+  background-color: #f8f9fa; /* Fondo gris claro neutral */
+  overflow: hidden;
+}
+
+/* La imagen se adaptará al 100% del marco sin perder su proporción ni cortarse */
+.detail-image-contain {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Encaja la imagen completa dentro del recuadro */
+  border-radius: 8px;
+}
+
+/* Ajuste responsivo para pantallas medianas y de escritorio */
+@media (min-width: 768px) {
+  .detail-image-wrapper {
+    height: 320px; /* Más espacio en pantallas grandes para apreciar el daño del cristal */
   }
 }
 </style>

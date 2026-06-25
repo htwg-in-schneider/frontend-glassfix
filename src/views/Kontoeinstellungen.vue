@@ -46,20 +46,6 @@ const handleLogout = () => {
           </div>
         </router-link>
 
-        <router-link to="/passwort-aendern" class="menu-list-item-link">
-          <div class="menu-list-item d-flex justify-content-between align-items-center p-3">
-            <div class="d-flex align-items-center gap-3">
-              <div class="icon-circle-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-key" viewBox="0 0 16 16">
-                  <path d="M0 8a4 4 0 0 1 7.465-2H14a.5.5 0 0 1 .354.146l1.5 1.5a.5.5 0 0 1 0 .708l-1.5 1.5a.5.5 0 0 1-.708 0L13 9.207l-.646.647a.5.5 0 0 1-.708 0L11 9.207l-.646.647a.5.5 0 0 1-.708 0L9 9.207l-.54.54A4 4 0 0 1 0 8m4-3a3 3 0 1 0 0 6 3 3 0 0 0 0-6"/>
-                </svg>
-              </div>
-              <span class="fw-bold item-text">Passwort ändern</span>
-            </div>
-            <span class="arrow-icon">&gt;</span>
-          </div>
-        </router-link>
-
         <div @click="handleLogout" class="menu-list-item d-flex justify-content-between align-items-center p-3">
           <div class="d-flex align-items-center gap-3">
             <div class="icon-circle-box">
@@ -72,20 +58,6 @@ const handleLogout = () => {
           </div>
           <span class="arrow-icon">&gt;</span>
         </div>
-
-        <router-link to="/konto-loeschen" class="menu-list-item-link">
-          <div class="menu-list-item delete-account-item d-flex justify-content-between align-items-center p-3">
-            <div class="d-flex align-items-center gap-3">
-              <div class="icon-circle-box trash-box">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
-                  <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
-                </svg>
-              </div>
-              <span class="fw-bold item-text text-danger">Konto löschen</span>
-            </div>
-            <span class="arrow-icon text-danger">&gt;</span>
-          </div>
-        </router-link>
 
       </div>
     </div>

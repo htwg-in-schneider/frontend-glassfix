@@ -4,10 +4,10 @@ import LogoAndTitle from '@/components/LogoAndTitle.vue'
 import Button from '@/components/Button.vue'
 
 import { useRouter } from 'vue-router'
-import { useAnfragenFilterStore } from '@/anfragenFilter'
+import { useAngebotFilterStore } from '@/angebotFilter'
 
 const router = useRouter()
-const filterStore = useAnfragenFilterStore()
+const filterStore = useAngebotFilterStore()
 
 function applyFilter() {
   router.push('/angebote')

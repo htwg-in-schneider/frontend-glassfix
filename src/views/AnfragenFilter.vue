@@ -35,9 +35,9 @@ function applyFilter() {
               @change="filterStore.setCategory($event.target.value)"
             >
               <option value="">Alle Kategorien</option>
-              <option value="Kategorie 1">Kategorie 1</option>
-              <option value="Kategorie 2">Kategorie 2</option>
-              <option value="Kategorie 3">Kategorie 3</option>
+              <option value="Kategorie 1">Trinkglas</option>
+              <option value="Kategorie 2">Fenster</option>
+              <option value="Kategorie 3">Vase</option>
               <option value="Kategorie 4">Kategorie 4</option>
             </select>
           </div>

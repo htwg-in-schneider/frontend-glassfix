@@ -83,21 +83,19 @@ const willkommenText = computed(() => {
 
 // Dynamischer Titel für die zentrale Anfragen-Box
 const sektionTitel = computed(() => {
-  if (benutzerRolle.value === 'KUNDE') return 'Anfragen-Historie';
+  if (benutzerRolle.value === 'KUNDE' || benutzerRolle === 'ADMIN') return 'Anfragen-Historie';
   return 'Neusten-Anfragen';
 });
 
 // Dynamisches Kachel-Menü basierend auf der Benutzerrolle
 const menueKacheln = computed(() => {
   const einstellungenKachel = { link: '/Kontoeinstellungen', text: 'Einstellungen', icon: 'gear' };
-  const profilKachel = { link: '/profilverwaltung', text: 'Profilverwaltung', icon: 'person' };
 
   if (benutzerRolle.value === 'FACHKRAFT') {
     return [
       { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
       { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
-      einstellungenKachel,
-      profilKachel
+      einstellungenKachel
     ];
   }
   
@@ -106,17 +104,23 @@ const menueKacheln = computed(() => {
       { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
       { link: '/von-fachkraft-bearbeitet', text: 'Von Fachkraft bearbeitet', icon: 'file-earmark-text' },
       { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
-      einstellungenKachel,
-      profilKachel
+      einstellungenKachel
     ];
+  }
+  if (benutzerRolle.value === 'ADMIN'){
+    return [
+    { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
+    { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
+    { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
+    einstellungenKachel
+  ];
   }
 
   return [
     { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
-    { link: '/filter', text: 'Alle Anfragen', icon: 'search' },
+    { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
     { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
-    einstellungenKachel,
-    profilKachel
+    einstellungenKachel
   ];
 });
 

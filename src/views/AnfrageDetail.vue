@@ -11,6 +11,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 
 const loeschenBestaetigen = ref(false);
+const viteBaseUrl = import.meta.env.BASE_URL;
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -267,12 +268,17 @@ function anfragePruefen(){
             {{ anfrage.experte.name }}
           </p>
 
-
           <div v-if="anfrage.bildUrl" class="mb-4">
-            <strong>Bilder</strong>
-            <div class="row mt-2 g-3">
-              <div class="col-6">
-                <img :src="anfrage.bildUrl" alt="Glas Objekt" class="img-fluid detail-image">
+            <strong class="d-block mb-2">Bilder</strong>
+            <div class="row m-0">
+              <div class="col-12 p-0">
+                <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
+                  <img 
+                    :src="`${viteBaseUrl}${anfrage.bildUrl.replace(/^\//, '')}`" 
+                    alt="Glas Objekt" 
+                    class="img-fluid detail-image-contain"
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -281,7 +287,7 @@ function anfragePruefen(){
 
         
 
-        <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId" class="mb-3">
+        <div v-if="(benutzerRolle === 'FACHKRAFT') && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN'" class="mb-3">
             <label class="form-label fw-bold">Antwort *</label>
             <textarea 
               class="form-control custom-input" 
@@ -290,17 +296,17 @@ function anfragePruefen(){
               v-model="anfrageAntwort"
             ></textarea>
           </div>
-          <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId" class="d-flex justify-content-center mt-3">
+          <div v-if="benutzerRolle === 'FACHKRAFT' && !anfrage.antwort && anfrage.experte && anfrage.experte.id === benutzerId || benutzerRolle === 'ADMIN'" class="d-flex justify-content-center mt-3">
             <Button :text="'Antwort Abgeben'" :type="'AnfrageCard'" :onClick="antwortAbgeben" />
           </div>
 
-        <div v-if="benutzerRolle === 'KUNDE' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
+        <div v-if="(benutzerRolle === 'KUNDE' || benutzerRolle === 'ADMIN') && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Bearbeiten'" :type="'AnfrageCard'" :onClick="geheZuBearbeiten" />
         </div>
-        <div v-if="benutzerRolle === 'KUNDE' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
+        <div v-if="(benutzerRolle === 'KUNDE' || benutzerRolle === 'ADMIN') && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Löschen'" :type="'default'" :onClick="bestaetigen"/>
         </div>
-        <div v-if="benutzerRolle === 'FACHKRAFT' && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
+        <div v-if="(benutzerRolle === 'FACHKRAFT' || benutzerRolle === 'ADMIN') && anfrage.status === 'ERSTELLT'" class="d-flex justify-content-center mt-4">
           <Button :text="'Prüfen'" :type="'default'" :onClick="anfragePruefen"/>
         </div>
         <div v-if="loeschenBestaetigen" class="delete-confirmation mx-auto mt-3 p-3 text-center">
@@ -337,6 +343,30 @@ function anfragePruefen(){
 @media (min-width: 768px) {
   .detail-image {
     height: 220px;
+  }
+}
+/* Contenedor tipo marco para la imagen de detalles */
+.detail-image-wrapper {
+  width: 100%;
+  height: 220px; /* Altura fija en móviles */
+  border: 2px solid #000000;
+  border-radius: 12px;
+  background-color: #f8f9fa; /* Fondo gris claro neutral */
+  overflow: hidden;
+}
+
+/* La imagen se adaptará al 100% del marco sin perder su proporción ni cortarse */
+.detail-image-contain {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Encaja la imagen completa dentro del recuadro */
+  border-radius: 8px;
+}
+
+/* Ajuste responsivo para pantallas medianas y de escritorio */
+@media (min-width: 768px) {
+  .detail-image-wrapper {
+    height: 320px; /* Más espacio en pantallas grandes para apreciar el daño del cristal */
   }
 }
 </style>

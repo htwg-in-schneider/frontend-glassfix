@@ -1,5 +1,6 @@
 <script setup>
 import Button from './Button.vue';
+const viteBaseUrl = import.meta.env.BASE_URL;
 
 defineProps({
   angebot: {
@@ -16,7 +17,7 @@ defineProps({
   >
     <div class="position-relative flex-shrink-0 style-img-container">
       <img
-        :src="angebot.anfrage.bildUrl"
+       :src="`${viteBaseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`"
         alt="Glas Objekt"
         class="w-100 h-100 object-fit-cover"
         @error="(e) => e.target.src = 'https://via.placeholder.com/300x200'"
