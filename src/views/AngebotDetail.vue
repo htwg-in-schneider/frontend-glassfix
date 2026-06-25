@@ -14,6 +14,7 @@ const angebotStore = updateAngebotStore;
 const loeschenBestaetigen = ref(false); 
 
 const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const appBaseUrl = import.meta.env.BASE_URL;
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -509,7 +510,7 @@ async function angebotAnnehmen(){
               <div class="col-12 p-0">
                 <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
                   <img 
-                    :src="`${baseUrl}/${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
+                    :src="`${appBaseUrl}/${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
                     alt="Glas Objekt" 
                     class="img-fluid detail-image-contain"
                   >

@@ -7,7 +7,7 @@ import { createAnfrageStore } from '@/store/createAnfrageStore';
 import { computed } from 'vue';
 
 const router = useRouter();
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
 
 function zurueckZuSchritt1() {
   router.push('/create-anfrage/schritt-1');

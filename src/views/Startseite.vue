@@ -7,7 +7,7 @@ import { useRouter } from 'vue-router';
 
 const { loginWithRedirect, isAuthenticated } = useAuth0()
 const router = useRouter()
-const baseUrl = import.meta.env.VITE_API_BASE_URL;
+const baseUrl = import.meta.env.BASE_URL;
 
 const goToAuth0Login = () => {
   loginWithRedirect({
