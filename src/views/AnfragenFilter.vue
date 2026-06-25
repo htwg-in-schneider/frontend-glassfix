@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue'
 import Header from '@/components/Header.vue'
 import LogoAndTitle from '@/components/LogoAndTitle.vue'
 import Button from '@/components/Button.vue'
@@ -9,9 +10,27 @@ import { useAnfragenFilterStore } from '@/anfragenFilter'
 const router = useRouter()
 const filterStore = useAnfragenFilterStore()
 
+const kategorien = ref([])
+const baseUrl = 'http://localhost:8081'
+
+async function ladeKategorien() {
+  try {
+    const response = await fetch(`${baseUrl}/api/kategorien`)
+
+    if (response.ok) {
+      kategorien.value = await response.json()
+    }
+  } catch (error) {
+    console.error('Kategorien konnten nicht geladen werden:', error)
+  }
+}
+
 function applyFilter() {
   router.push('/anfragen')
 }
+
+onMounted(ladeKategorien)
+
 </script>
 
 <template>
@@ -34,11 +53,13 @@ function applyFilter() {
               :value="filterStore.category"
               @change="filterStore.setCategory($event.target.value)"
             >
-              <option value="">Alle Kategorien</option>
-              <option value="Kategorie 1">Trinkglas</option>
-              <option value="Kategorie 2">Fenster</option>
-              <option value="Kategorie 3">Vase</option>
-              <option value="Kategorie 4">Kategorie 4</option>
+              <option
+                v-for="kategorie in kategorien"
+                :key="kategorie.id"
+                :value="kategorie.name"
+              >
+                {{ kategorie.name }}
+              </option>
             </select>
           </div>
 

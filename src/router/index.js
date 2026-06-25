@@ -17,6 +17,8 @@ import AngebotDetail from '@/views/AngebotDetail.vue';
 import Impressum from '@/views/Impressum.vue';
 import Datenschutz from '@/views/Datenschutz.vue';
 import ErgebnisView from '@/views/ErgebnisView.vue';
+import AdminBenutzerView from '@/views/AdminBenutzerView.vue';
+import AdminKategorieView from '@/views/AdminKategorieView.vue';
 
 
 const routes = [
@@ -103,6 +105,16 @@ const routes = [
     path: '/ergebnis',
     name: 'Ergebnis',
     component: ErgebnisView
+  }, 
+  {
+    path: '/admin/benutzer',
+    name: 'AdminBenutzer',
+    component: AdminBenutzerView
+  },
+  {
+    path: '/admin/kategorien',
+    name: 'AdminKategorien',
+    component: AdminKategorieView
   }
 
 ];

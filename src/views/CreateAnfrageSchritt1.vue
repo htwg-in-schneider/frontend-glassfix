@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
@@ -7,6 +8,24 @@ import { createAnfrageStore } from '@/store/createAnfrageStore';
 import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 
 const router = useRouter();
+const kategorien = ref([]);
+const kategorienFehler = ref('');
+const baseUrl = 'http://localhost:8081';
+
+async function ladeKategorien() {
+  try {
+    const response = await fetch(`${baseUrl}/api/kategorien`);
+
+    if (!response.ok) {
+      kategorienFehler.value = 'Kategorien konnten nicht geladen werden.';
+      return;
+    }
+
+    kategorien.value = await response.json();
+  } catch (error) {
+    kategorienFehler.value = 'Netzwerkfehler beim Laden der Kategorien.';
+  }
+}
 
 function weiterZuSchritt2() {
   if (!createAnfrageStore.kategorie) {
@@ -26,6 +45,8 @@ function weiterZuSchritt2() {
 
   router.push('/create-anfrage/schritt-2');
 }
+
+onMounted(ladeKategorien);
 </script>
 
 <template>
@@ -45,15 +66,22 @@ function weiterZuSchritt2() {
           
           <div class="mb-3">
             <label class="form-label fw-bold">Kategorie *</label>
-            <select 
-              class="form-select custom-input" 
+            <select
+              class="form-select custom-input"
               v-model="createAnfrageStore.kategorie"
             >
-              <option value="" disabled selected>Bitte wählen...</option>
-              <option value="Trinkglas">Trinkglas</option>
-              <option value="Fensterglas">Fensterglas</option>
-              <option value="Vase">Vase</option>
+              <option value="" disabled>Bitte wählen...</option>
+              <option
+                v-for="kategorie in kategorien"
+                :key="kategorie.id"
+                :value="kategorie.name"
+              >
+                {{ kategorie.name }}
+              </option>
             </select>
+            <p v-if="kategorienFehler" class="text-danger small mt-2">
+              {{ kategorienFehler }}
+            </p>
           </div>
 
           <div class="mb-3">

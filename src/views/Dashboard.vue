@@ -1,19 +1,18 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, computed, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useAuth0 } from '@auth0/auth0-vue';
 
 import Header from '@/components/Header.vue';
 import LogoAndTitle from '@/components/LogoAndTitle.vue';
 
-const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+const { isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
-const error = ref('');
 
 const router = useRouter();
 
 const benutzername = ref('Benutzer');
-const benutzerRolle = ref('KUNDE'); // Mögliche Werte: KUNDE, FACHKRAFT, GESCHAEFTSFUEHRER
+const benutzerRolle = ref('KUNDE'); 
 const anfragenListe = ref([]);
 const istAmLaden = ref(true);
 
@@ -34,7 +33,7 @@ const ladeDashboardDaten = async () => {
 
     if (benutzerAntwort.ok) {
       const benutzerDaten = await benutzerAntwort.json();
-      benutzername.value = benutzerDaten.name;
+      benutzername.value = benutzerDaten.name?.trim() || 'Benutzer';
       benutzerRolle.value = benutzerDaten.rolle; 
     } else {
       console.warn('Das Backend hat den Token abgelehnt (401). Leite weiter auf /');
@@ -46,7 +45,7 @@ const ladeDashboardDaten = async () => {
     const anfragenAntwort = await fetch('http://localhost:8081/api/anfrage', {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${bearerToken.value}`,
+        Authorization: `Bearer ${bearerToken.value}`,
         'Content-Type': 'application/json'
       }
     });
@@ -76,9 +75,7 @@ watch([isLoading, isAuthenticated], ([newLoading, newAuth]) => {
 
 // Dynamischer Begrüßungstext basierend auf der Rolle
 const willkommenText = computed(() => {
-  if (benutzerRolle.value === 'FACHKRAFT') return 'Hallo Fachkraft';
-  if (benutzerRolle.value === 'GESCHAEFTSFUEHRER') return 'Hallo Geschäftsführer';
-  return `Hallo ${benutzername.value}`;
+  return `Hallo ${benutzername.value || 'Benutzer'}`;
 });
 
 // Dynamischer Titel für die zentrale Anfragen-Box
@@ -89,37 +86,39 @@ const sektionTitel = computed(() => {
 
 // Dynamisches Kachel-Menü basierend auf der Benutzerrolle
 const menueKacheln = computed(() => {
-  const einstellungenKachel = { link: '/Kontoeinstellungen', text: 'Einstellungen', icon: 'gear' };
+  const einstellungenKachel = { link: '/kontoeinstellungen', text: 'Einstellungen', icon: '⚙️' };
 
   if (benutzerRolle.value === 'FACHKRAFT') {
     return [
-      { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
-      { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
+      { link: '/filter', text: 'Anfragen suchen', icon: '🔎' },
+      { link: '/angebot-filter', text: 'Angebote', icon: '✉️' },
       einstellungenKachel
     ];
   }
-  
+
   if (benutzerRolle.value === 'GESCHAEFTSFUEHRER') {
     return [
-      { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
-      { link: '/von-fachkraft-bearbeitet', text: 'Von Fachkraft bearbeitet', icon: 'file-earmark-text' },
-      { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
+      { link: '/filter', text: 'Anfragen suchen', icon: '🔎' },
+      { link: '/angebot-filter', text: 'Angebote verwalten', icon: '✉️' },
       einstellungenKachel
     ];
   }
-  if (benutzerRolle.value === 'ADMIN'){
+
+  if (benutzerRolle.value === 'ADMIN') {
     return [
-    { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
-    { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
-    { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
-    einstellungenKachel
-  ];
+      { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: '➕' },
+      { link: '/filter', text: 'Anfragen verwalten', icon: '🔎' },
+      { link: '/angebot-filter', text: 'Angebote verwalten', icon: '✉️' },
+      { link: '/admin/benutzer', text: 'Nutzer verwalten', icon: '👤' },
+      { link: '/admin/kategorien', text: 'Kategorien verwalten', icon: '📄' },
+      einstellungenKachel
+    ];
   }
 
   return [
-    { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: 'plus-circle' },
-    { link: '/filter', text: 'Anfragen suchen', icon: 'search' },
-    { link: '/angebot-filter', text:'Angebote', icon: 'envelope' },
+    { link: '/create-anfrage/schritt-1', text: 'Neue Anfrage', icon: '➕' },
+    { link: '/filter', text: 'Anfragen suchen', icon: '🔎' },
+    { link: '/angebot-filter', text: 'Angebote', icon: '✉️' },
     einstellungenKachel
   ];
 });
@@ -138,7 +137,7 @@ const formatiereDatum = (datumString) => {
     <Header text="Startseite" />
     <div class="row m-0 text-center justify-content-center pt-4">
       <LogoAndTitle
-      :title="`Hallo ${benutzername}!`"
+      :title="willkommenText"
       :subtitle="`Schön, dass Sie wieder da sind!`"/>
     </div>
 
@@ -173,47 +172,13 @@ const formatiereDatum = (datumString) => {
       </div>
     </div>
 
-    <div class="px-4 mt-4">
+    <div class="px-4 mt-4 pb-5">
       <div class="row g-3">
         <div v-for="(kachel, index) in menueKacheln" :key="index" class="col-6">
           <router-link :to="kachel.link" class="text-decoration-none">
             <div class="menu-tile text-center p-3 d-flex flex-column align-items-center justify-content-center">
-              <div class="icon-circle mb-2 position-relative">
-                
-                <svg v-if="kachel.icon === 'search'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
-                  <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-                </svg>
-
-                <svg v-else-if="kachel.icon === 'check-circle'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-check2-circle" viewBox="0 0 16 16">
-                  <path d="M2.5 8a5.5 5.5 0 0 1 8.25-4.764.5.5 0 0 0 .5-.866A6.5 6.5 0 1 0 14.5 8a.5.5 0 0 0-1 0 5.5 5.5 0 1 1-11 0"/>
-                  <path d="M15.354 3.354a.5.5 0 0 0-.708-.708L8 9.293 5.354 6.646a.5.5 0 1 0-.708.708l3 3a.5.5 0 0 0 .708 0z"/>
-                </svg>
-
-                <svg v-else-if="kachel.icon === 'file-earmark-text'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-file-earmark-text" viewBox="0 0 16 16">
-                  <path d="M5.5 7a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1zM5 9.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5m0 2a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 0 1h-5a.5.5 0 0 1-.5-.5"/>
-                  <path d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5z"/>
-                </svg>
-
-                <svg v-if="kachel.icon === 'plus-circle'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-plus-circle" viewBox="0 0 16 16">
-                  <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
-                  <path d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4"/>
-                </svg>
-
-                <svg v-else-if="kachel.icon === 'envelope'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-envelope" viewBox="0 0 16 16">
-                  <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v.217l7 4.2 7-4.2V4a1 1 0 0 0-1-1zm13 2.383-4.708 2.825L15 11.105zm-.034 6.876-5.64-3.471L8 9.583l-1.326-.795-5.64 3.47A1 1 0 0 0 2 13h12a1 1 0 0 0 .966-.741zM1 11.105l4.708-2.897L1 5.383z"/>
-                </svg>
-
-                <svg v-else-if="kachel.icon === 'gear'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-gear" viewBox="0 0 16 16">
-                  <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492M5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0m4.042-3.176q.444.07.876.217l.291-.16a1.873 1.873 0 0 1 2.693 1.115l.094.319q.246.835 0 1.674l-.319.094a1.873 1.873 0 0 0-1.115 2.693l.16.292c.415.764-.42 1.6-1.185 1.185l-.292-.16a1.873 1.873 0 0 0-2.693 1.115l-.094.319c-.246.835-1.428.835-1.674 0l-.094-.319a1.873 1.873 0 0 0-2.693-1.115l-.292.16c-.764.415-1.6-.42-1.185-1.185l.16-.292a1.873 1.873 0 0 0-1.115-2.692l-.319-.094c-.835-.246-.835-1.428 0-1.674l.319-.094a1.873 1.873 0 0 0 1.115-2.693l-.16-.292c-.415-.764.42-1.6 1.185-1.185l.292.16a1.873 1.873 0 0 0 2.693-1.115z"/>
-                </svg>
-
-                <svg v-else-if="kachel.icon === 'person'" xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
-                  <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0m4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4m-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10s-3.516.68-4.168 1.332c-.678.678-.83 1.418-.832 1.664z"/>
-                </svg>
-
-                <span v-if="kachel.badge" class="position-absolute top-0 start-100 translate-middle badge rounded-circle bg-dark badge-notification">
-                  {{ kachel.badge }}
-                </span>
+              <div class="icon-circle mb-2 tile-icon">
+                {{ kachel.icon }}
               </div>
               <span class="fw-bold tile-text text-dark">{{ kachel.text }}</span>
             </div>
@@ -221,7 +186,6 @@ const formatiereDatum = (datumString) => {
         </div>
       </div>
     </div>
-
   </div>
 </template>
 
