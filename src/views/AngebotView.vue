@@ -12,6 +12,8 @@ const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
 const error = ref('');
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const filterStore = useAngebotFilterStore();
 
 // --- API INTEGRATION VARIABLES (DEUTSCH) ---
@@ -27,7 +29,7 @@ const ladeAngeboteVomBackend = async () => {
   bearerToken.value = token;
   try {
     // 'credentials: "include"' ist zwingend erforderlich, damit die HttpSession-Cookie (JSESSIONID) übertragen wird
-    const antwort = await fetch('http://localhost:8081/api/auskunft', {
+    const antwort = await fetch(`${baseUrl}/api/auskunft`, {
       method: 'GET',
       credentials: 'include', 
       headers: {

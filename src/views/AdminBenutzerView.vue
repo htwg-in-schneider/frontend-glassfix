@@ -14,7 +14,7 @@ const fehlerMeldung = ref('');
 const erfolgsMeldung = ref('');
 const istAmLaden = ref(true);
 
-const baseUrl = 'http://localhost:8081';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const gefilterteBenutzer = computed(() => {
   const suchwert = suche.value.toLowerCase().trim();

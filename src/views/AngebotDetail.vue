@@ -13,8 +13,7 @@ import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 const angebotStore = updateAngebotStore;
 const loeschenBestaetigen = ref(false); 
 
-const baseUrl = 'http://localhost:8081';
-const viteBaseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -115,7 +114,7 @@ function abbrechenLoeschen() {
 }
 
 function loeschenBestaetigenUndAusfuehren() {
-  fetch(`http://localhost:8081/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
+  fetch(`${baseUrl}/api/auskunft/anfrage/${angebot.value.anfrage.id}`, {
     method: 'DELETE',
     headers: {
       'Authorization': `Bearer ${bearerToken.value}`,
@@ -510,7 +509,7 @@ async function angebotAnnehmen(){
               <div class="col-12 p-0">
                 <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
                   <img 
-                    :src="`${viteBaseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
+                    :src="`${baseUrl}${angebot.anfrage.bildUrl.replace(/^\//, '')}`" 
                     alt="Glas Objekt" 
                     class="img-fluid detail-image-contain"
                   >

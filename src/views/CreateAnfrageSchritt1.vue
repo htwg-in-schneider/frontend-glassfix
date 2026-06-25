@@ -10,7 +10,7 @@ import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 const router = useRouter();
 const kategorien = ref([]);
 const kategorienFehler = ref('');
-const baseUrl = 'http://localhost:8081';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 async function ladeKategorien() {
   try {

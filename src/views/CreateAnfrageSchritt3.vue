@@ -14,6 +14,7 @@ const error = ref('');
 
 const router = useRouter();
 const istAmSpeichern = ref(false);
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 
 const seitenTitel = computed(() => {
@@ -45,8 +46,8 @@ async function speichereAnfrage() {
   const istEditModus = createAnfrageStore.id !== null && createAnfrageStore.id !== undefined;
 
   const url = istEditModus 
-    ? `http://localhost:8081/api/anfrage/${createAnfrageStore.id}` 
-    : 'http://localhost:8081/api/anfrage';
+    ? `${baseUrl}/api/anfrage/${createAnfrageStore.id}` 
+    : `${baseUrl}/api/anfrage`;
   
   const HTTPMethode = istEditModus ? 'PUT' : 'POST';
 

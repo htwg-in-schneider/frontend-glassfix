@@ -1,20 +1,16 @@
-import { fileURLToPath, URL } from 'node:url'
-
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { fileURLToPath, URL } from 'node:url'
 
-// https://vite.dev/config/
+// ADAPTADO: El nombre exacto de tu repositorio de frontend en GitHub
+const repoName = '/frontend-glassfix/';
+
 export default defineConfig({
-  
-  base: '/frontend-glassfix/', 
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
+  plugins: [vue()],
+  base: process.env.NODE_ENV === 'production' ? repoName : '/',
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))
-    },
-  },
+    }
+  }
 })

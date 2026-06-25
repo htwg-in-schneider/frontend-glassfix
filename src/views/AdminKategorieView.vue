@@ -25,7 +25,7 @@ const istAmLaden = ref(true);
 const loeschenBestaetigen = ref(false);
 const kategorieZumLoeschen = ref(null);
 
-const baseUrl = 'http://localhost:8081';
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 async function ladeKategorien() {
   istAmLaden.value = true;

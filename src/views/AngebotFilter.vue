@@ -11,7 +11,7 @@ const router = useRouter()
 const filterStore = useAngebotFilterStore()
 
 const kategorien = ref([])
-const baseUrl = 'http://localhost:8081'
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 async function ladeKategorien() {
   try {

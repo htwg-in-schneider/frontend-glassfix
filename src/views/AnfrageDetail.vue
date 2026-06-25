@@ -11,7 +11,7 @@ import { useAuth0 } from '@auth0/auth0-vue';
 import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 
 const loeschenBestaetigen = ref(false);
-const viteBaseUrl = import.meta.env.BASE_URL;
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
 
 const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 const bearerToken = ref('');
@@ -34,7 +34,7 @@ const getBenutzerRolle = async () => {
   bearerToken.value = token;
 
     try{
-    const benutzerAntwort = await fetch('http://localhost:8081/api/profile', {
+    const benutzerAntwort = await fetch(`${baseUrl}/api/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -63,7 +63,7 @@ const ladeAnfrageDetailVomBackend = async () => {
   try {
     const anfrageId = route.params.id;
 
-    const antwort = await fetch(`http://localhost:8081/api/anfrage/${anfrageId}`, {
+    const antwort = await fetch(`${baseUrl}/api/anfrage/${anfrageId}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -125,7 +125,7 @@ function abbrechenLoeschen(){
 }
 
 function loeschenBestaetigenUndAusfuehren() {
-    fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+    fetch(`${baseUrl}/api/anfrage/${anfrage.value.id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -148,7 +148,7 @@ function loeschenBestaetigenUndAusfuehren() {
 }
 
 function anfragePruefen(){
-  fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+  fetch(`${baseUrl}/api/anfrage/${anfrage.value.id}`, {
     method: 'PUT',
     headers: {
       'Authorization': `Bearer ${bearerToken.value}`,
@@ -180,7 +180,7 @@ function anfragePruefen(){
       zeigeErgebnis(router, false, 'Bitte geben Sie eine Antwort ein.', `/anfrage/${anfrage.value.id}`);
       return;
     }
-    fetch(`http://localhost:8081/api/anfrage/${anfrage.value.id}`, {
+    fetch(`${baseUrl}/api/anfrage/${anfrage.value.id}`, {
       method: 'PUT',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -274,7 +274,7 @@ function anfragePruefen(){
               <div class="col-12 p-0">
                 <div class="detail-image-wrapper d-flex justify-content-center align-items-center p-2">
                   <img 
-                    :src="`${viteBaseUrl}${anfrage.bildUrl.replace(/^\//, '')}`" 
+                    :src="`${baseUrl}${anfrage.bildUrl.replace(/^\//, '')}`" 
                     alt="Glas Objekt" 
                     class="img-fluid detail-image-contain"
                   >

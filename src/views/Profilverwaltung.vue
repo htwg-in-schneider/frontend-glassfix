@@ -9,8 +9,7 @@ import { zeigeErgebnis } from '@/router/ergebnisNavigation';
 import { updateProfileStore } from '@/store/profileStore'
 const router = useRouter();
 
-const baseurl = 'http://localhost:8081';
-const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0()
+const baseurl = import.meta.env.VITE_API_BASE_URL;const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0()
 const profildata = ref(null);
 const bearerToken = ref('');
 const error = ref('');

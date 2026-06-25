@@ -11,6 +11,8 @@ const bearerToken = ref('');
 
 const router = useRouter();
 
+const baseUrl = import.meta.env.VITE_API_BASE_URL;
+
 const benutzername = ref('Benutzer');
 const benutzerRolle = ref('KUNDE'); 
 const anfragenListe = ref([]);
@@ -23,7 +25,7 @@ const ladeDashboardDaten = async () => {
     const token = await getAccessTokenSilently();
     bearerToken.value = token;
 
-    const benutzerAntwort = await fetch('http://localhost:8081/api/profile', {
+    const benutzerAntwort = await fetch(`${baseUrl}/api/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${bearerToken.value}`,
@@ -42,7 +44,7 @@ const ladeDashboardDaten = async () => {
     }
 
     // 3. Cargar la lista de consultas (Anfragen)
-    const anfragenAntwort = await fetch('http://localhost:8081/api/anfrage', {
+    const anfragenAntwort = await fetch(`${baseUrl}/api/anfrage`, {
       method: 'GET',
       headers: {
         Authorization: `Bearer ${bearerToken.value}`,
